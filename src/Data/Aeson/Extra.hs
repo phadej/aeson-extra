@@ -120,13 +120,13 @@ instance (ToJSONMap m k v) => ToJSON (M m) where
 
 -- | Singleton string encoded and decoded as ifself.
 --
--- > λ> encode (Sym :: Sym "foobar")
+-- > λ> encode (SymTag :: SymTag "foobar")
 -- > "\"foobar\""
 --
--- > decode "\"foobar\"" :: Maybe (Sym "foobar")
+-- > decode "\"foobar\"" :: Maybe (SymTag "foobar")
 -- > Just Sym
 --
--- > decode "\"foobar\"" :: Maybe (Sym "barfoo")
+-- > decode "\"foobar\"" :: Maybe (SymTag "barfoo")
 -- > Nothing
 data SymTag (s :: Symbol) = SymTag
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
@@ -134,7 +134,7 @@ data SymTag (s :: Symbol) = SymTag
 instance KnownSymbol s => FromJSON (SymTag s) where
   parseJSON (String t)
     | T.unpack t == symbolVal (Proxy :: Proxy s) = pure SymTag
-  parseJSON v = typeMismatch ("Sym " ++ show (symbolVal (Proxy :: Proxy s))) v
+  parseJSON v = typeMismatch ("SymTag " ++ show (symbolVal (Proxy :: Proxy s))) v
 
 instance KnownSymbol s => ToJSON (SymTag s) where
 #if MIN_VERSION_aeson (0,10,0)
