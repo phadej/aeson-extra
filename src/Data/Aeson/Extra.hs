@@ -40,18 +40,17 @@ module Data.Aeson.Extra (
   ) where
 
 #if !MIN_VERSION_base(4,8,0)
-import           Control.Applicative
 import           Data.Foldable (Foldable)
 import           Data.Traversable (Traversable, traverse)
 #endif
 
+import           Control.Applicative
 import           Data.Monoid
 import           Data.Aeson.Compat
 import           Data.Aeson.Types hiding ((.:?))
+import qualified Data.Foldable as Foldable
 import qualified Data.HashMap.Strict as H
 import           Data.Hashable (Hashable)
-import           Data.ListLike (ListLike)
-import qualified Data.ListLike as ListLike
 import qualified Data.Map as Map
 import           Data.Proxy
 import           Data.Text as T
@@ -189,28 +188,32 @@ instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
 -- > "42"
 -- > λ > encode (CollapsedList ([1, 2, 3] :: [Int]))
 -- > "[1,2,3]"
-newtype CollapsedList full elem = CollapsedList full
-  deriving (Eq, Ord, Show, Read)
+--
+-- Documentation rely on @f@ 'Alternative' instance behaving like lists'.
+newtype CollapsedList f a = CollapsedList (f a)
+  deriving (Eq, Ord, Show, Read, Functor, Foldable, Traversable)
 
-getCollapsedList :: CollapsedList full elem -> full
+getCollapsedList :: CollapsedList f a -> f a
 getCollapsedList (CollapsedList l) = l
 
-instance (FromJSON elem, FromJSON full, ListLike full elem) => FromJSON (CollapsedList full elem) where
-  parseJSON Null         = pure (CollapsedList ListLike.empty)
+instance (FromJSON a, FromJSON (f a), Alternative f) => FromJSON (CollapsedList f a) where
+  parseJSON Null         = pure (CollapsedList Control.Applicative.empty)
   parseJSON v@(Array _)  = CollapsedList <$> parseJSON v
-  parseJSON v            = CollapsedList . ListLike.singleton <$> parseJSON v
+  parseJSON v            = CollapsedList . pure <$> parseJSON v
 
-instance (ToJSON elem, ToJSON full, ListLike full elem) => ToJSON (CollapsedList full elem) where
+instance (ToJSON a, ToJSON (f a), Foldable f) => ToJSON (CollapsedList f a) where
 #if MIN_VERSION_aeson (0,10,0)
-  toEncoding (CollapsedList l)
-    | ListLike.null l                 = toEncoding Null
-    | ListLike.null (ListLike.tail l) = toEncoding (ListLike.head l)
-    | otherwise                       = toEncoding l
+  toEncoding (CollapsedList l) =
+    case Foldable.toList l of
+      []   -> toEncoding Null
+      [x]  -> toEncoding x
+      _    -> toEncoding l
 #endif
-  toJSON (CollapsedList l)
-    | ListLike.null l                 = Null
-    | ListLike.null (ListLike.tail l) = toJSON (ListLike.head l)
-    | otherwise                       = toJSON l
+  toJSON (CollapsedList l) =
+    case Foldable.toList l of
+      []   -> toJSON Null
+      [x]  -> toJSON x
+      _    -> toJSON l
 
 -- | Parses possibly collapsed array value from the object's field.
 --
@@ -224,10 +227,10 @@ instance (ToJSON elem, ToJSON full, ListLike full elem) => ToJSON (CollapsedList
 -- > Just (V [42])
 -- > λ > decode "{\"value\": [1, 2, 3, 4]}" :: Maybe V
 -- > Just (V [1,2,3,4])
-parseCollapsedList :: (FromJSON elem, FromJSON full, ListLike full elem) => Object -> Text -> Parser full
+parseCollapsedList :: (FromJSON a, FromJSON (f a), Alternative f) => Object -> Text -> Parser (f a)
 parseCollapsedList obj key =
   case H.lookup key obj of
-    Nothing   -> pure ListLike.empty
+    Nothing   -> pure Control.Applicative.empty
 #if MIN_VERSION_aeson(0,10,0) 
     Just v    -> modifyFailure addKeyName $ (getCollapsedList <$> parseJSON v) -- <?> Key key
   where

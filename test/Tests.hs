@@ -12,10 +12,13 @@ import           Data.Aeson.Extra
 import qualified Data.HashMap.Lazy as H
 import           Data.Map (Map)
 import           Data.Proxy
+import           Data.Vector (Vector)
 import           Test.QuickCheck.Instances ()
 import           Test.Tasty
 import           Test.Tasty.HUnit
 import           Test.Tasty.QuickCheck
+
+import           Orphans ()
 
 main :: IO ()
 main = defaultMain $ testGroup "Tests"
@@ -89,8 +92,14 @@ collapsedListTests = testGroup "collapsedList"
   , testCase "null"      $ (decode "{\"value\": null}" :: Maybe V) @?= Just (V [])
   , testCase "singleton" $ (decode "{\"value\": 42}" :: Maybe V) @?= Just (V [42])
   , testCase "array"     $ (decode "{\"value\": [1, 2, 3, 4]}" :: Maybe V) @?= Just (V [1,2,3,4])
-  , testProperty "decode .encode " $
+  , testProperty "decode . encode" $
       let prop :: [Int] -> Property
+          prop l = let rhs = fmap getCollapsedList . decode . encode . CollapsedList $ l
+                       lhs = Just l
+                   in lhs === rhs
+      in prop
+  , testProperty "Vector decode . encode" $
+      let prop :: Vector Int -> Property
           prop l = let rhs = fmap getCollapsedList . decode . encode . CollapsedList $ l
                        lhs = Just l
                    in lhs === rhs
