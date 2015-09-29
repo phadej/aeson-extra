@@ -8,6 +8,7 @@ synopsis:       Extra goodies for aeson
 description:    The package motivation is twofold:
                 .
                 * provide compatibility layer for @aeson@
+                .
                 * provide extra combinators
 category:       Web
 homepage:       https://github.com/phadej/aeson-extra#readme

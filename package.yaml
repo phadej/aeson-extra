@@ -5,6 +5,7 @@ description: |
   The package motivation is twofold:
   .
   * provide compatibility layer for @aeson@
+  .
   * provide extra combinators
 author: Oleg Grenrus <oleg.grenrus@iki.fi>
 maintainer: Oleg Grenrus <oleg.grenrus@iki.fi>
