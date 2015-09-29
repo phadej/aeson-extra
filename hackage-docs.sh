@@ -47,7 +47,7 @@ fi
 
 builddir=$dir/dist
 
-cabal configure --builddir=$builddir --package-db=clear --package-db=global --package-db=$(stack path --snapshot-pkg-db) --package-db=$(stack path --snapshot-pkg-db)
+cabal configure --builddir=$builddir --package-db=clear --package-db=global --package-db=$(stack path --snapshot-pkg-db) --package-db=$(stack path --local-pkg-db)
 cabal haddock --builddir=$builddir $HYPERLINK_FLAG --html-location='/package/$pkg-$version/docs' --contents-location='/package/$pkg-$version'
 cp -R $builddir/doc/html/$pkg/ $dir/$pkg-$ver-docs
 
