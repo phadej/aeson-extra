@@ -59,7 +59,7 @@ import qualified Data.HashMap.Strict as H
 import           Data.Text as T
 import           Data.Typeable (Typeable)
 
--- | Exception thrown by 'throwDecode' - family of functions.
+-- | Exception thrown by 'decode' - family of functions in this module.
 newtype AesonException = AesonException String
   deriving (Show, Typeable)
 
