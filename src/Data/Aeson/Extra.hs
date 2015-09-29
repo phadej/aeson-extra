@@ -124,7 +124,7 @@ instance (ToJSONMap m k v) => ToJSON (M m) where
 -- > "\"foobar\""
 --
 -- > decode "\"foobar\"" :: Maybe (SymTag "foobar")
--- > Just Sym
+-- > Just SymTag
 --
 -- > decode "\"foobar\"" :: Maybe (SymTag "barfoo")
 -- > Nothing
@@ -218,7 +218,7 @@ instance (ToJSON a, ToJSON (f a), Foldable f) => ToJSON (CollapsedList f a) wher
 -- | Parses possibly collapsed array value from the object's field.
 --
 -- > λ > newtype V = V [Int] deriving (Show)
--- > λ > instance FromJSON V where parseJSON = withObject "V" $ \obj -> V <$> collapsedList obj "value"
+-- > λ > instance FromJSON V where parseJSON = withObject "V" $ \obj -> V <$> parseCollapsedList obj "value"
 -- > λ > decode "{}" :: Maybe V
 -- > Just (V [])
 -- > λ > decode "{\"value\": null}" :: Maybe V
