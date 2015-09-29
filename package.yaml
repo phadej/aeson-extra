@@ -1,5 +1,5 @@
 name: aeson-extra
-version: 0.1.0.0
+version: 0.2.0.0
 synopsis: Extra goodies for aeson
 description: |
   The package motivation is twofold:
