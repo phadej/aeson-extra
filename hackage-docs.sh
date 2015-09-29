@@ -48,7 +48,7 @@ fi
 builddir=$dir/dist
 
 cabal configure --builddir=$builddir --package-db=clear --package-db=global --package-db=$(stack path --snapshot-pkg-db) --package-db=$(stack path --snapshot-pkg-db)
-cabal haddock --builddir=$builddir --hoogle $HYPERLINK_FLAG --html-location='/package/$pkg-$version/docs' --contents-location='/package/$pkg-$version'
+cabal haddock --builddir=$builddir $HYPERLINK_FLAG --html-location='/package/$pkg-$version/docs' --contents-location='/package/$pkg-$version'
 cp -R $builddir/doc/html/$pkg/ $dir/$pkg-$ver-docs
 
 tar cvz -C $dir --format=ustar -f $dir/$pkg-$ver-docs.tar.gz $pkg-$ver-docs
