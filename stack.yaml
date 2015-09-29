@@ -1,7 +1,1 @@
-flags: {}
-packages:
-- '.'
-extra-deps:
-- aeson-0.10.0.0
-- attoparsec-0.13.0.1
-resolver: lts-3.6
+stack-lts-2.yaml
