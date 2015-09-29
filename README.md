@@ -5,5 +5,5 @@
 
 The package motivation is twofold:
 
-- provide compatibility layer for @aeson@
+- provide compatibility layer for [`aeson`](http://hackage.haskell.org/package/aeson)
 - provide extra combinators
