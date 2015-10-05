@@ -25,12 +25,14 @@ module Data.Aeson.Extra (
   FromJSONMap(..),
   ToJSONKey(..),
   ToJSONMap(..),
+#if MIN_VERSION_base(4,7,0)
   -- * Symbol tag
   SymTag(..),
   -- * Singleton object
   SingObject(..),
   mkSingObject,
   getSingObject,
+#endif
   -- * CollapsedList
   CollapsedList(..),
   getCollapsedList,
@@ -52,11 +54,14 @@ import qualified Data.Foldable as Foldable
 import qualified Data.HashMap.Strict as H
 import           Data.Hashable (Hashable)
 import qualified Data.Map as Map
-import           Data.Proxy
 import           Data.Text as T
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Read as T
+
+#if MIN_VERSION_base(4,7,0)
+import           Data.Proxy
 import           GHC.TypeLits
+#endif
 
 -- | A wrapper type to parse arbitrary maps
 --
@@ -118,6 +123,7 @@ instance (ToJSONKey k, ToJSON v) => ToJSONMap (Map.Map k v) k v where
 instance (ToJSONMap m k v) => ToJSON (M m) where
   toJSON (M m) = Object (toJSONMap m)
 
+#if MIN_VERSION_base(4,7,0)
 -- | Singleton string encoded and decoded as ifself.
 --
 -- > λ> encode (SymTag :: SymTag "foobar")
@@ -128,6 +134,8 @@ instance (ToJSONMap m k v) => ToJSON (M m) where
 --
 -- > decode "\"foobar\"" :: Maybe (SymTag "barfoo")
 -- > Nothing
+--
+-- > /Available with: base >=4.7/
 data SymTag (s :: Symbol) = SymTag
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
@@ -150,6 +158,8 @@ instance KnownSymbol s => ToJSON (SymTag s) where
 --
 -- > λ > encode (SingObject 42 :: SingObject "value" Int)
 -- > "{\"value\":42}"
+--
+-- > /Available with: base >=4.7/
 newtype SingObject (s ::Symbol) a = SingObject a
   deriving (Eq, Ord, Show, Read, Functor, Foldable, Traversable)
 
@@ -160,7 +170,7 @@ getSingObject :: Proxy s -> SingObject s a -> a
 getSingObject _ (SingObject x) = x
 
 instance (KnownSymbol s, FromJSON a) => FromJSON (SingObject s a) where
-  parseJSON = withObject ("SingObject "<> show key) $ \obj -> 
+  parseJSON = withObject ("SingObject "<> show key) $ \obj ->
     SingObject <$> obj .: T.pack key
     where key = symbolVal (Proxy :: Proxy s)
 
@@ -171,6 +181,7 @@ instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
 #endif
   toJSON (SingObject x) = object [T.pack key .= x]
     where key = symbolVal (Proxy :: Proxy s)
+#endif
 
 
 -- | Collapsed list, singleton is represented as the value itself in JSON encoding.
@@ -231,7 +242,7 @@ parseCollapsedList :: (FromJSON a, FromJSON (f a), Alternative f) => Object -> T
 parseCollapsedList obj key =
   case H.lookup key obj of
     Nothing   -> pure Control.Applicative.empty
-#if MIN_VERSION_aeson(0,10,0) 
+#if MIN_VERSION_aeson(0,10,0)
     Just v    -> modifyFailure addKeyName $ (getCollapsedList <$> parseJSON v) -- <?> Key key
   where
     addKeyName = (("failed to parse field " <> T.unpack key <> ": ") <>)
