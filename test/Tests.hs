@@ -11,12 +11,15 @@ import           Control.Applicative
 import           Data.Aeson.Extra
 import qualified Data.HashMap.Lazy as H
 import           Data.Map (Map)
-import           Data.Proxy
 import           Data.Vector (Vector)
 import           Test.QuickCheck.Instances ()
 import           Test.Tasty
 import           Test.Tasty.HUnit
 import           Test.Tasty.QuickCheck
+
+#if MIN_VERSION_base(4,7,0)
+import           Data.Proxy
+#endif
 
 import           Orphans ()
 
@@ -24,8 +27,10 @@ main :: IO ()
 main = defaultMain $ testGroup "Tests"
   [ dotColonMark
   , mTests
+#if MIN_VERSION_base(4,7,0)
   , symTests
   , singObjectTests
+#endif
   , collapsedListTests
   ]
 
@@ -46,6 +51,8 @@ mTests = testGroup "M"
       in prop
   ]
   where result = M $ H.fromList [(1,1),(2,2)]
+
+#if MIN_VERSION_base(4,7,0)
 
 ------------------------------------------------------------------------------
 -- SymTag
@@ -78,6 +85,8 @@ singObjectTests = testGroup "SingObject"
           p = Proxy
       in prop
   ]
+
+#endif
 
 ------------------------------------------------------------------------------
 -- parseCollapsedList
