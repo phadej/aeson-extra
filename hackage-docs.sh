@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 # This if stack-enabled fork of https://github.com/ekmett/lens/blob/master/scripts/hackage-docs.sh
@@ -34,7 +35,11 @@ echo "Detected package: $pkg-$ver"
 dir=$(mktemp -d build-docs.XXXXXX)
 trap 'rm -r "$dir"' EXIT
 
-export PATH=$(stack path --bin-path):$PATH
+export PATH=$(stack path --bin-path)
+
+ghc --version
+cabal --version
+stack --version
 
 if haddock --hyperlinked-source >/dev/null
 then
