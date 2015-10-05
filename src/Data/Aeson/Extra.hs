@@ -135,7 +135,7 @@ instance (ToJSONMap m k v) => ToJSON (M m) where
 -- > decode "\"foobar\"" :: Maybe (SymTag "barfoo")
 -- > Nothing
 --
--- > /Available with: base >=4.7/
+-- /Available with: base >=4.7/
 data SymTag (s :: Symbol) = SymTag
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
@@ -159,7 +159,7 @@ instance KnownSymbol s => ToJSON (SymTag s) where
 -- > λ > encode (SingObject 42 :: SingObject "value" Int)
 -- > "{\"value\":42}"
 --
--- > /Available with: base >=4.7/
+-- /Available with: base >=4.7/
 newtype SingObject (s ::Symbol) a = SingObject a
   deriving (Eq, Ord, Show, Read, Functor, Foldable, Traversable)
 
