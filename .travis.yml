@@ -12,10 +12,11 @@ before_install:
 install:
 - if [ -f $HOME/.cabal/packages/hackage.haskell.org/00-index.tar.gz ]; then zcat $HOME/.cabal/packages/hackage.haskell.org/00-index.tar.gz
   > $HOME/.cabal/packages/hackage.haskell.org/00-index.tar; ls -l $HOME/.cabal/packages/hackage.haskell.org/;
-  fi; cabal update; sed -i 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config; if [ -n "$STACKAGESNAPSHOT"
-  ]; then curl --silent https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config |
-  grep -v "$(cabal info . -v0 | head -n 1 | awk '{ print $2 }' | sed -E 's/-[0-9]+(\.[0-9]+)+//')
-  ==" > cabal.config; fi; if [ "$NOTESTS" = "YES" ]; then cabal install --only-dependencies
+  fi; cabal update; sed -i 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config; if [ -n "$CABALCONFIG"
+  ]; then cp $CABALCONFIG cabal.config; fi; if [ -n "$STACKAGESNAPSHOT" ]; then curl
+  --silent https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config | grep -v "$(cabal
+  info . -v0 | head -n 1 | awk '{ print $2 }' | sed -E 's/-[0-9]+(\.[0-9]+)+//') =="
+  > cabal.config; fi; if [ "$NOTESTS" = "YES" ]; then cabal install --only-dependencies
   --dry -v > installplan.txt; else cabal install --only-dependencies --enable-tests
   --enable-benchmarks --dry -v > installplan.txt; fi; sed -i -e '1,/^Resolving /d'
   installplan.txt; cat installplan.txt; if diff -u $HOME/.cabsnap/installplan.txt
@@ -50,6 +51,16 @@ matrix:
         - ghc-7.6.3
         - libgmp-dev
     compiler: ! ': # ghc-7.6.3 cabal-1.18'
+  - env: GHCVER=7.6.3 CABALVER=1.18 CABALCONFIG=aeson-0.7.0.6.cabal.config
+    addons:
+      apt:
+        sources:
+        - hvr-ghc
+        packages:
+        - cabal-install-1.18
+        - ghc-7.6.3
+        - libgmp-dev
+    compiler: ! ': # ghc-7.6.3 cabal-1.18  aeson-0.7.0.6.cabal.config'
   - env: GHCVER=7.8.4 CABALVER=1.18
     addons:
       apt:
@@ -60,6 +71,16 @@ matrix:
         - ghc-7.8.4
         - libgmp-dev
     compiler: ! ': # ghc-7.8.4 cabal-1.18'
+  - env: GHCVER=7.8.4 CABALVER=1.18 CABALCONFIG=aeson-0.7.0.6.cabal.config
+    addons:
+      apt:
+        sources:
+        - hvr-ghc
+        packages:
+        - cabal-install-1.18
+        - ghc-7.8.4
+        - libgmp-dev
+    compiler: ! ': # ghc-7.8.4 cabal-1.18  aeson-0.7.0.6.cabal.config'
   - env: GHCVER=7.8.4 CABALVER=1.18 STACKAGESNAPSHOT=lts-2.22
     addons:
       apt:
