@@ -37,6 +37,9 @@ module Data.Aeson.Extra (
   CollapsedList(..),
   getCollapsedList,
   parseCollapsedList,
+  -- * UTCTime
+  U(..),
+  Z(..),
   -- * Re-exports
   module Data.Aeson.Compat,
   ) where
@@ -56,12 +59,15 @@ import           Data.Hashable (Hashable)
 import qualified Data.Map as Map
 import           Data.Text as T
 import qualified Data.Text.Lazy as TL
+import           Data.Time (UTCTime, ZonedTime)
 import qualified Data.Text.Read as T
 
 #if MIN_VERSION_base(4,7,0)
 import           Data.Proxy
 import           GHC.TypeLits
 #endif
+
+import qualified Data.Aeson.Extra.Time as ExtraTime
 
 -- | A wrapper type to parse arbitrary maps
 --
@@ -249,3 +255,44 @@ parseCollapsedList obj key =
 #else
     Just v    -> getCollapsedList <$> parseJSON v
 #endif
+
+-- | A type to parse 'UTCTime'
+--
+-- 'FromJSON' instance accepts for example:
+--
+-- @
+-- 2015-09-07T08:16:40.807Z
+-- 2015-09-07 11:16:40.807 +03:00
+-- @
+--
+-- Latter format is accepted by @aeson@ staring from version @0.10.0.0@.
+--
+-- See <https://github.com/bos/aeson/blob/4667ef1029a373cf4510f7deca147c357c6d8947/Data/Aeson/Parser/Time.hs#L150>
+--
+-- /Since: aeson-extra-0.2.2.0/
+newtype U = U { getU :: UTCTime }
+  deriving (Eq, Ord, Show, Read)
+
+instance ToJSON U where
+  toJSON = toJSON . getU
+#if MIN_VERSION_aeson (0,10,0)
+  toEncoding = toEncoding . getU
+#endif
+
+instance FromJSON U where
+  parseJSON = withText "UTCTime" (fmap U . ExtraTime.run ExtraTime.utcTime)
+
+-- | A type to parse 'ZonedTime'
+--
+-- /Since: aeson-extra-0.2.2.0/
+newtype Z = Z { getZ :: ZonedTime }
+  deriving (Show, Read)
+
+instance ToJSON Z where
+  toJSON = toJSON . getZ
+#if MIN_VERSION_aeson (0,10,0)
+  toEncoding = toEncoding . getZ
+#endif
+
+instance FromJSON Z where
+  parseJSON = withText "ZonedTime" (fmap Z . ExtraTime.run ExtraTime.zonedTime)
