@@ -11,6 +11,9 @@ import           Control.Applicative
 import           Data.Aeson.Extra
 import qualified Data.HashMap.Lazy as H
 import           Data.Map (Map)
+import           Data.Maybe (isJust)
+import           Data.String (fromString)
+import           Data.Time (zonedTimeToUTC)
 import           Data.Vector (Vector)
 import           Test.QuickCheck.Instances ()
 import           Test.Tasty
@@ -32,6 +35,8 @@ main = defaultMain $ testGroup "Tests"
   , singObjectTests
 #endif
   , collapsedListTests
+  , utctimeTests
+  , zonedtimeTests
   ]
 
 ------------------------------------------------------------------------------
@@ -145,3 +150,43 @@ dotColonMark = testGroup "Operators" $ fmap t [
         ex2 = "{\"value\": 42 }"
         ex3 = "{\"value\": null }"
         t   = testCase "-"
+
+------------------------------------------------------------------------------
+-- U & Z
+------------------------------------------------------------------------------
+
+utctimeTests :: TestTree
+utctimeTests = testGroup "U" $
+  [ testCase "base case" $ assertBool "base case" $ isJust simple
+  ] ++ map t timeStrings
+  where simple = decode "\"2015-09-07T08:16:40.807Z\"" :: Maybe U
+        t str = testCase str
+              . assertEqual str simple
+              . decode
+              . fromString
+              $ "\"" ++ str ++ "\""
+
+zonedtimeTests :: TestTree
+zonedtimeTests = testGroup "Z" $
+  [ testCase "base case" $ assertBool "base case" $ isJust simple
+  ] ++ map t timeStrings
+  where simple = decode "\"2015-09-07T08:16:40.807Z\"" :: Maybe Z
+        t str = testCase str
+              . assertEqual str (fmap z simple)
+              . fmap z
+              . decode
+              . fromString
+              $ "\"" ++ str ++ "\""
+        z (Z z') = zonedTimeToUTC z'
+
+timeStrings :: [String]
+timeStrings =
+  [ "2015-09-07T08:16:40.807Z"
+  , "2015-09-07T11:16:40.807+0300"
+  , "2015-09-07 08:16:40.807Z"
+  , "2015-09-07 08:16:40.807 Z"
+  , "2015-09-07 08:16:40.807 +0000"
+  , "2015-09-07 08:16:40.807 +00:00"
+  , "2015-09-07 11:16:40.807 +03:00"
+  , "2015-09-07 05:16:40.807 -03:00"
+  ]

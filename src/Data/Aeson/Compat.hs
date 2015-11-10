@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Aeson.Compat
@@ -59,6 +60,11 @@ import qualified Data.HashMap.Strict as H
 import           Data.Text as T
 import           Data.Typeable (Typeable)
 
+#if !MIN_VERSION_aeson(0,10,0)
+import           Data.Time (Day, LocalTime)
+import qualified Data.Aeson.Extra.Time as ExtraTime
+#endif
+
 -- | Exception thrown by 'decode' - family of functions in this module.
 newtype AesonException = AesonException String
   deriving (Show, Typeable)
@@ -70,7 +76,7 @@ eitherAesonExc (Left err) = throwM (AesonException err)
 eitherAesonExc (Right x)  = return x
 
 -- | Like original 'Data.Aeson.decode' but in arbitrary 'MonadThrow'.
--- 
+--
 -- Parse a top-level JSON value, i.e. also strings, numbers etc.
 decode :: (FromJSON a, MonadThrow m) => L.ByteString -> m a
 decode = eitherAesonExc . eitherDecode
@@ -114,7 +120,7 @@ obj .:? key = case H.lookup key obj of
 (.:!) :: (FromJSON a) => Object -> Text -> Parser (Maybe a)
 obj .:! key = case H.lookup key obj of
                 Nothing -> pure Nothing
-                Just v  -> 
+                Just v  ->
 #if MIN_VERSION_aeson(0,10,0)
                   modifyFailure addKeyName $ Just <$> parseJSON v -- <?> Key key
   where
@@ -175,4 +181,14 @@ eitherDecodeStrictWith p to s =
       Error msg -> Left msg
 {-# INLINE eitherDecodeStrictWith #-}
 
+#endif
+
+#if !MIN_VERSION_aeson(0,10,0)
+-- | /Since: aeson-extra-0.2.2.0/
+instance FromJSON Day where
+  parseJSON = withText "Day" (ExtraTime.run ExtraTime.day)
+
+-- | /Since: aeson-extra-0.2.2.0/
+instance FromJSON LocalTime where
+  parseJSON = withText "LocalTime" (ExtraTime.run ExtraTime.localTime)
 #endif
