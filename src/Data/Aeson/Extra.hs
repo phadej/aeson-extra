@@ -67,7 +67,9 @@ import           Data.Proxy
 import           GHC.TypeLits
 #endif
 
+#if !MIN_VERSION_aeson (0,10,0)
 import qualified Data.Aeson.Extra.Time as ExtraTime
+#endif
 
 -- | A wrapper type to parse arbitrary maps
 --
@@ -280,7 +282,11 @@ instance ToJSON U where
 #endif
 
 instance FromJSON U where
+#if MIN_VERSION_aeson (0,10,0)
+  parseJSON = fmap U . parseJSON
+#else
   parseJSON = withText "UTCTime" (fmap U . ExtraTime.run ExtraTime.utcTime)
+#endif
 
 -- | A type to parse 'ZonedTime'
 --
@@ -295,4 +301,8 @@ instance ToJSON Z where
 #endif
 
 instance FromJSON Z where
+#if MIN_VERSION_aeson (0,10,0)
+  parseJSON = fmap Z . parseJSON
+#else
   parseJSON = withText "ZonedTime" (fmap Z . ExtraTime.run ExtraTime.zonedTime)
+#endif
