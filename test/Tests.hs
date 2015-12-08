@@ -29,6 +29,7 @@ import           Orphans ()
 main :: IO ()
 main = defaultMain $ testGroup "Tests"
   [ dotColonMark
+  , encodeStrictTests
   , mTests
 #if MIN_VERSION_base(4,7,0)
   , symTests
@@ -38,6 +39,18 @@ main = defaultMain $ testGroup "Tests"
   , utctimeTests
   , zonedtimeTests
   ]
+
+------------------------------------------------------------------------------
+-- encodeStrict
+------------------------------------------------------------------------------
+encodeStrictTests :: TestTree
+encodeStrictTests = testGroup "encodeStrict"
+  [ testProperty "decodeStrict . encodeStrict" prop
+  ]
+  where prop :: Int -> Property
+        prop i = let lhs = decodeStrict . encodeStrict $ i
+                     rhs = Just i
+                 in lhs === rhs
 
 ------------------------------------------------------------------------------
 -- M

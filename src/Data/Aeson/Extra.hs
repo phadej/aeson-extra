@@ -18,6 +18,8 @@
 --
 -- More or less useful newtypes for writing 'FromJSON' & 'ToJSON' instances
 module Data.Aeson.Extra (
+  -- * Strict encoding
+  encodeStrict,
   -- * Generic maps
   M(..),
   FromJSONKey(..),
@@ -51,6 +53,8 @@ import           Data.Traversable (Traversable, traverse)
 
 import           Control.Applicative
 import           Data.Monoid
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as LBS
 import           Data.Aeson.Compat
 import           Data.Aeson.Types hiding ((.:?))
 import qualified Data.Foldable as Foldable
@@ -70,6 +74,10 @@ import           GHC.TypeLits
 #if !MIN_VERSION_aeson (0,10,0)
 import qualified Data.Aeson.Extra.Time as ExtraTime
 #endif
+
+-- | Like 'encode', but produces strict 'BS.ByteString'.
+encodeStrict :: ToJSON a => a -> BS.ByteString
+encodeStrict = LBS.toStrict . encode
 
 -- | A wrapper type to parse arbitrary maps
 --
