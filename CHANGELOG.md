@@ -1,3 +1,8 @@
+# 0.2.3.0 (2015-12-08)
+
+- `Data.Time.TH` module with `mkUTCTime`
+- `encodeStrict` in `Data.Aeson.Extra`
+
 # 0.2.2.0 (2015-11-10)
 
 - `U` and `Z` to parse `UTCTime` and `ZonedTime` compatibly
