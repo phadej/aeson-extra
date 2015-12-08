@@ -2,18 +2,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE TemplateHaskell #-}
 module Main (main) where
 
 #if !MIN_VERSION_base(4,8,0)
 import           Control.Applicative
 #endif
 
-import           Data.Aeson.Extra
 import qualified Data.HashMap.Lazy as H
 import           Data.Map (Map)
 import           Data.Maybe (isJust)
 import           Data.String (fromString)
-import           Data.Time (zonedTimeToUTC)
+import           Data.Time (zonedTimeToUTC, UTCTime(..), Day(..))
 import           Data.Vector (Vector)
 import           Test.QuickCheck.Instances ()
 import           Test.Tasty
@@ -23,6 +23,9 @@ import           Test.Tasty.QuickCheck
 #if MIN_VERSION_base(4,7,0)
 import           Data.Proxy
 #endif
+
+import           Data.Aeson.Extra
+import           Data.Time.TH
 
 import           Orphans ()
 
@@ -38,6 +41,7 @@ main = defaultMain $ testGroup "Tests"
   , collapsedListTests
   , utctimeTests
   , zonedtimeTests
+  , timeTHTests
   ]
 
 ------------------------------------------------------------------------------
@@ -203,3 +207,15 @@ timeStrings =
   , "2015-09-07 11:16:40.807 +03:00"
   , "2015-09-07 05:16:40.807 -03:00"
   ]
+
+------------------------------------------------------------------------------
+-- Time Template Haskell
+------------------------------------------------------------------------------
+
+timeTHTests :: TestTree
+timeTHTests =
+    testCase "time TH example" $ assertBool "should be equal" $ lhs == rhs
+      where lhs = UTCTime (ModifiedJulianDay 56789) 123.456
+            rhs = $(mkUTCTime "2014-05-12 00:02:03.456000Z")
+
+    
