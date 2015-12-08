@@ -15,6 +15,8 @@ import Data.Aeson.Extra.Time (utcTime)
 --
 -- > t :: UTCTime
 -- > t = $(mkUTCTime "2014-05-12 00:02:03.456000Z")
+--
+-- /Since: 0.2.3.0/
 mkUTCTime :: String -> Q Exp
 mkUTCTime s =
     case A.parseOnly (utcTime <* A.endOfInput) (T.pack s) of

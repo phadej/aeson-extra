@@ -76,6 +76,8 @@ import qualified Data.Aeson.Extra.Time as ExtraTime
 #endif
 
 -- | Like 'encode', but produces strict 'BS.ByteString'.
+--
+-- /Since: 0.2.3.0/
 encodeStrict :: ToJSON a => a -> BS.ByteString
 encodeStrict = LBS.toStrict . encode
 
