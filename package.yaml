@@ -1,18 +1,13 @@
 name: aeson-extra
-version: 0.2.3.0
+version: 0.3.0.0
 synopsis: Extra goodies for aeson
-description: |
-  The package motivation is twofold:
-  .
-  * provide compatibility layer for @aeson@
-  .
-  * provide extra combinators
+description: Package provides extra funcitonality on top of @aeson@ and @aeson-compat@
 author: Oleg Grenrus <oleg.grenrus@iki.fi>
 maintainer: Oleg Grenrus <oleg.grenrus@iki.fi>
 license: BSD3
 github: phadej/aeson-extra
 category: Web
-tested-with: GHC==7.6.3, GHC==7.8.4, GHC==7.10.2
+tested-with: GHC==7.6.3, GHC==7.8.4, GHC==7.10.3
 extra-source-files:
 - README.md
 - CHANGELOG.md
