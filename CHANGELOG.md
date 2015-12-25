@@ -1,3 +1,9 @@
+# 0.3.0.0 (2015-12-25)
+
+- `Data.Time.TH` moved to [`time-parsers`](http://hackage.haskell.org/package/time-parsers)
+- `Data.Aeson.Compat` moved to [`aeson-compat`](http://hackage.haskell.org/package/aeson-compat)
+- The modules aren't re-exported, as that would require `Cabal >= 1.21` restriction
+
 # 0.2.3.0 (2015-12-08)
 
 - `Data.Time.TH` module with `mkUTCTime`

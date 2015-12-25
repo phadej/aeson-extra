@@ -1,14 +1,14 @@
-{-# LANGUAGE CPP #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE DeriveFoldable #-}
-{-# LANGUAGE DeriveTraversable #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE CPP                    #-}
+{-# LANGUAGE DataKinds              #-}
+{-# LANGUAGE DeriveDataTypeable     #-}
+{-# LANGUAGE DeriveFoldable         #-}
+{-# LANGUAGE DeriveFunctor          #-}
+{-# LANGUAGE DeriveTraversable      #-}
+{-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE KindSignatures         #-}
+{-# LANGUAGE ScopedTypeVariables    #-}
+{-# LANGUAGE UndecidableInstances   #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Aeson.Extra
@@ -46,33 +46,34 @@ module Data.Aeson.Extra (
   module Data.Aeson.Compat,
   ) where
 
-#if !MIN_VERSION_base(4,8,0)
-import           Data.Foldable (Foldable)
-import           Data.Traversable (Traversable, traverse)
-#endif
+import Prelude        ()
+import Prelude.Compat
 
-import           Control.Applicative
-import           Data.Monoid
-import qualified Data.ByteString as BS
+import Control.Applicative (Alternative(..))
+import Data.Aeson.Compat
+import Data.Aeson.Types    hiding ((.:?))
+import Data.Hashable       (Hashable)
+import Data.Monoid
+import Data.Text           (Text)
+import Data.Time           (UTCTime, ZonedTime)
+
+import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
-import           Data.Aeson.Compat
-import           Data.Aeson.Types hiding ((.:?))
-import qualified Data.Foldable as Foldable
-import qualified Data.HashMap.Strict as H
-import           Data.Hashable (Hashable)
-import qualified Data.Map as Map
-import           Data.Text as T
-import qualified Data.Text.Lazy as TL
-import           Data.Time (UTCTime, ZonedTime)
-import qualified Data.Text.Read as T
+import qualified Data.Foldable        as Foldable
+import qualified Data.HashMap.Strict  as H
+import qualified Data.Map             as Map
+import qualified Data.Text            as T
+import qualified Data.Text.Lazy       as TL
+import qualified Data.Text.Read       as T
 
 #if MIN_VERSION_base(4,7,0)
-import           Data.Proxy
-import           GHC.TypeLits
+import Data.Proxy
+import GHC.TypeLits
 #endif
 
 #if !MIN_VERSION_aeson (0,10,0)
-import qualified Data.Aeson.Extra.Time as ExtraTime
+import qualified Text.Parsec       as Parsec
+import qualified Data.Time.Parsers as TimeParsers
 #endif
 
 -- | Like 'encode', but produces strict 'BS.ByteString'.
@@ -295,7 +296,7 @@ instance FromJSON U where
 #if MIN_VERSION_aeson (0,10,0)
   parseJSON = fmap U . parseJSON
 #else
-  parseJSON = withText "UTCTime" (fmap U . ExtraTime.run ExtraTime.utcTime)
+  parseJSON = withText "UTCTime" (fmap U . run TimeParsers.utcTime)
 #endif
 
 -- | A type to parse 'ZonedTime'
@@ -314,5 +315,13 @@ instance FromJSON Z where
 #if MIN_VERSION_aeson (0,10,0)
   parseJSON = fmap Z . parseJSON
 #else
-  parseJSON = withText "ZonedTime" (fmap Z . ExtraTime.run ExtraTime.zonedTime)
+  parseJSON = withText "ZonedTime" (fmap Z . run TimeParsers.zonedTime)
+#endif
+
+#if !MIN_VERSION_aeson (0,10,0)
+-- | Run a 'parsers' parser as an aeson parser.
+run :: Parsec.Parsec Text () a -> Text -> Parser a
+run p t = case Parsec.parse (p <* Parsec.eof) "" t of
+            Left err -> fail $ "could not parse date: " ++ show err
+            Right r  -> return r
 #endif
