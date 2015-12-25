@@ -2,7 +2,6 @@ flags: {}
 packages:
 - '.'
 extra-deps:
-- aeson-0.10.0.0
-- attoparsec-0.13.0.1
-- vector-0.11.0.0
-resolver: nightly-2015-09-29
+- aeson-compat-0.3.0.0
+- time-parsers-0.1.0.0
+resolver: nightly-2015-12-25

@@ -1,5 +1,7 @@
 flags: {}
 packages:
 - '.'
-extra-deps: []
+extra-deps:
+- aeson-compat-0.3.0.0
+- time-parsers-0.1.0.0
 resolver: lts-2.22

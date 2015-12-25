@@ -123,16 +123,6 @@ matrix:
         - ghc-7.10.3
         - libgmp-dev
     compiler: ! ': # ghc-7.10.3 cabal-1.22'
-  - env: GHCVER=7.10.3 CABALVER=1.22 CABALCONFIG=time-1.6.cabal.config NOTESTS=YES
-    addons:
-      apt:
-        sources:
-        - hvr-ghc
-        packages:
-        - cabal-install-1.22
-        - ghc-7.10.3
-        - libgmp-dev
-    compiler: ! ': # ghc-7.10.3 cabal-1.22  time-1.6.cabal.config'
   - env: GHCVER=head CABALVER=1.22
     addons:
       apt:
