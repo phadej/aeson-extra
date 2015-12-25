@@ -44,7 +44,7 @@ library
     , scientific               >=0.3  && <0.4
     , template-haskell         >=2.8  && <2.11
     , text                     >=1.2  && <1.3
-    , time                     >=1.4.2 && <1.6
+    , time                     >=1.4.2 && <1.7
     , unordered-containers     >=0.2  && <0.3
     , vector                   >=0.10 && <0.12
   exposed-modules:
@@ -72,7 +72,7 @@ test-suite aeson-extra-test
     , scientific               >=0.3  && <0.4
     , template-haskell         >=2.8  && <2.11
     , text                     >=1.2  && <1.3
-    , time                     >=1.4.2 && <1.6
+    , time                     >=1.4.2 && <1.7
     , unordered-containers     >=0.2  && <0.3
     , vector                   >=0.10 && <0.12
     , aeson-extra
