@@ -16,7 +16,7 @@ ghc-options: -Wall
 
 dependencies:
   - base                     >=4.6  && <4.9
-  - base-compat              >=0.6.0   && <0.9
+  - base-compat              >=0.6.0   && <0.10
   - aeson                    >=0.7.0.6 && <0.11
   - aeson-compat             >=0.3.0.0 && <0.4
   - bytestring               >=0.10 && <0.11
