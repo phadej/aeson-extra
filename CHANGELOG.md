@@ -1,3 +1,7 @@
+# 0.3.0.1 (2016-01-26)
+
+- Support `quickcheck-instances >=0.3.12`
+
 # 0.3.0.0 (2015-12-25)
 
 - `Data.Time.TH` moved to [`time-parsers`](http://hackage.haskell.org/package/time-parsers)

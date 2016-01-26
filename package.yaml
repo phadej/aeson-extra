@@ -1,5 +1,5 @@
 name: aeson-extra
-version: 0.3.0.0
+version: 0.3.0.1
 synopsis: Extra goodies for aeson
 description: Package provides extra funcitonality on top of @aeson@ and @aeson-compat@
 author: Oleg Grenrus <oleg.grenrus@iki.fi>
