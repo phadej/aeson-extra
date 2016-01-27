@@ -9,7 +9,8 @@ module Main (main) where
 import           Control.Applicative
 #endif
 
-import qualified Data.HashMap.Lazy as H
+
+
 import           Data.Map (Map)
 import           Data.Maybe (isJust)
 import           Data.String (fromString)
@@ -19,6 +20,10 @@ import           Test.QuickCheck.Instances ()
 import           Test.Tasty
 import           Test.Tasty.HUnit
 import           Test.Tasty.QuickCheck
+import Data.These (These (..))
+import Data.Align (alignWith)
+
+import qualified Data.HashMap.Lazy as H
 
 #if MIN_VERSION_base(4,7,0)
 import           Data.Proxy
@@ -42,6 +47,7 @@ main = defaultMain $ testGroup "Tests"
   , utctimeTests
   , zonedtimeTests
   , timeTHTests
+  , mergeTests  
   ]
 
 ------------------------------------------------------------------------------
@@ -208,14 +214,37 @@ timeStrings =
   , "2015-09-07 05:16:40.807 -03:00"
   ]
 
-------------------------------------------------------------------------------
--- Time Template Haskell
-------------------------------------------------------------------------------
-
 timeTHTests :: TestTree
 timeTHTests =
     testCase "time TH example" $ assertBool "should be equal" $ lhs == rhs
       where lhs = UTCTime (ModifiedJulianDay 56789) 123.456
             rhs = $(mkUTCTime "2014-05-12 00:02:03.456000Z")
 
+------------------------------------------------------------------------------
+-- Merge tests
+------------------------------------------------------------------------------
+
+lodashMerge :: Value -> Value -> Value
+lodashMerge x y = merge lodashMergeAlg x y
+
+lodashMergeAlg :: (a -> a -> a) -> ValueF a -> ValueF a -> ValueF a
+lodashMergeAlg r a' b' = case (a', b') of
+    (ObjectF a, ObjectF b) -> ObjectF $ alignWith f a b
+    (ArrayF a,  ArrayF b)  -> ArrayF $ alignWith f a b
+    (_,         b)         -> b
+  where f (These x y) = r x y
+        f (This x)    = x
+        f (That x)    = x
     
+mergeTests :: TestTree
+mergeTests = testGroup "Lodash merge examples" $ map f examples
+  where
+    f (x, y, z) = testCase "-" $ assertBool "should be equal" $ lodashMerge x y == z
+    examples =
+      [ (,,) $(mkValue "[1, 2, 3]") $(mkValue "[4, 5, 6, 7, 8]") $(mkValue "[4, 5, 6, 7, 8]")
+      , (,,) $(mkValue' "{'a': 1}") $(mkValue' "{'b': 2}") $(mkValue' "{'a': 1, 'b': 2}")
+      , (,,)
+        $(mkValue' "{ 'data': [{ 'user': 'barney' }, { 'user': 'fred' }] }")
+        $(mkValue' "{ 'data': [{ 'age': 36 }, { 'age': 40 }] }")
+        $(mkValue' "{ 'data': [{ 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 40 }] }")
+      ]
