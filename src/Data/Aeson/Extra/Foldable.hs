@@ -37,12 +37,18 @@ import Data.Vector (Vector)
 import qualified Data.Functor.Foldable as F
 
 -- | A JSON \"object\" (key\/value map).
+--
+-- /Since: aeson-extra-0.3.1.0/
 type ObjectF a = HashMap Text a
 
 -- | A JSON \"array\" (sequence).
+--
+-- /Since: aeson-extra-0.3.1.0/
 type ArrayF a = Vector a
 
 -- | An algebra of 'Value'
+--
+-- /Since: aeson-extra-0.3.1.0/
 data ValueF a
     = ObjectF (ObjectF a)
     | ArrayF !(ArrayF a)

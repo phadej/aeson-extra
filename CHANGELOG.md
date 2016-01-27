@@ -1,3 +1,9 @@
+# 0.3.1.0 (2015-12-27)
+
+- Add `Data.Aeson.Extra.TH`
+- Add `Data.Aeson.Extra.Foldable`
+- Add `Data.Aeson.Extra.Merge`
+
 # 0.3.0.1 (2016-01-26)
 
 - Support `quickcheck-instances >=0.3.12`

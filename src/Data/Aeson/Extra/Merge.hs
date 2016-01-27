@@ -38,11 +38,15 @@ import Data.Functor.Foldable (project, embed)
 --         f (This x)    = x
 --         f (That x)    = x
 -- @
+--
+-- /Since: aeson-extra-0.3.1.0/
 merge :: (forall a. (a -> a -> a) -> ValueF a -> ValueF a -> ValueF a)
        -> Value -> Value -> Value
 merge f a b = embed $ f (merge f) (project a) (project b)
 
 -- | Generic merge, in arbitrary context.
+--
+-- /Since: aeson-extra-0.3.1.0/
 mergeA :: Functor f
       => (forall a. (a -> a -> f a) -> ValueF a -> ValueF a -> f (ValueF a))
       -> Value -> Value -> f Value

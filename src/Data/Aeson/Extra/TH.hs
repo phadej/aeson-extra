@@ -28,6 +28,8 @@ import qualified Data.HashMap.Strict as HM
 -- | Create a 'Value' from string representation.
 -- 
 -- This is useful in tests.
+--
+-- /Since: aeson-extra-0.3.1.0/
 mkValue :: String -> Q Exp
 mkValue s = case eitherDecodeStrict' bs :: Either String Value of
     Left err -> fail $ "mkValue: " ++ err
@@ -38,12 +40,16 @@ mkValue s = case eitherDecodeStrict' bs :: Either String Value of
 --
 -- > > $(mkValue' "{'a': 2 }")
 -- > Object (fromList [("a",Number 2.0)])
+--
+-- /Since: aeson-extra-0.3.1.0/
 mkValue' :: String -> Q Exp
 mkValue' = mkValue . map f
   where f '\'' = '"'
         f x    = x
 
 -- | From 'aeson-extra'
+--
+-- /Since: aeson-extra-0.3.1.0/
 instance Lift Value where
     lift Null = [| Null |]
     lift (Bool b) = [| Bool b |]
