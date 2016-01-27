@@ -39,6 +39,7 @@ library
     , exceptions               >=0.8  && <0.9
     , hashable                 >=1.2  && <1.3
     , parsec                   >=3.1.9 && <3.2
+    , recursion-schemes        >=4.1.2 && <4.2
     , scientific               >=0.3  && <0.4
     , template-haskell         >=2.8  && <2.11
     , text                     >=1.2  && <1.3
@@ -46,11 +47,15 @@ library
     , time-parsers             >=0.1.0.0 && <0.2
     , unordered-containers     >=0.2  && <0.3
     , vector                   >=0.10 && <0.12
+    , transformers             >=0.3  && <0.6
   exposed-modules:
       Data.Aeson.Extra
       Data.Aeson.Extra.CollapsedList
+      Data.Aeson.Extra.Foldable
       Data.Aeson.Extra.Map
+      Data.Aeson.Extra.Merge
       Data.Aeson.Extra.Time
+      Data.Aeson.Extra.TH
 
   if impl(ghc >= 7.8)
     exposed-modules:
@@ -78,6 +83,7 @@ test-suite aeson-extra-test
     , scientific               >=0.3  && <0.4
     , template-haskell         >=2.8  && <2.11
     , text                     >=1.2  && <1.3
+    , these                    >=0.6.2.0 && <0.7
     , time                     >=1.4.2 && <1.7
     , time-parsers             >=0.1.0.0 && <0.2
     , unordered-containers     >=0.2  && <0.3

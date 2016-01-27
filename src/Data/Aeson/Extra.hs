@@ -32,6 +32,15 @@ module Data.Aeson.Extra (
   -- * UTCTime
   U(..),
   Z(..),
+  -- * Algebra
+  ValueF(..),
+  ObjectF,
+  ArrayF,
+  -- * Merge
+  merge,
+  -- * Template Haskell
+  mkValue,
+  mkValue',
   -- * Re-exports
   module Data.Aeson.Compat,
   ) where
@@ -45,8 +54,11 @@ import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
 
 import Data.Aeson.Extra.CollapsedList
+import Data.Aeson.Extra.Foldable
 import Data.Aeson.Extra.Map
+import Data.Aeson.Extra.Merge
 import Data.Aeson.Extra.Time
+import Data.Aeson.Extra.TH
 
 #if MIN_VERSION_base(4,7,0)
 import Data.Aeson.Extra.SingObject
