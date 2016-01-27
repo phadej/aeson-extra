@@ -3,7 +3,7 @@
 -- see: https://github.com/sol/hpack
 
 name:           aeson-extra
-version:        0.3.0.1
+version:        0.3.1.0
 synopsis:       Extra goodies for aeson
 description:    Package provides extra funcitonality on top of @aeson@ and @aeson-compat@
 category:       Web
