@@ -1,3 +1,7 @@
+# 0.3.1.1 (2016-02-09)
+
+- Support aeson-0.11
+
 # 0.3.1.0 (2015-12-27)
 
 - Add `Data.Aeson.Extra.TH`
