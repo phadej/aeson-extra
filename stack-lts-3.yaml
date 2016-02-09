@@ -6,4 +6,4 @@ extra-deps:
 - recursion-schemes-4.1.2
 - these-0.6.2.1
 - time-parsers-0.1.0.0
-resolver: lts-3.19
+resolver: lts-3.22

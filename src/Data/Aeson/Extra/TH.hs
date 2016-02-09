@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP             #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 -----------------------------------------------------------------------------
@@ -8,7 +9,7 @@
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
 -- In addition to 'mkValue' and 'mkValue'' helpers,
--- this module exports 'Lift' 'Value' orphan instance
+-- this module exports 'Lift' 'Value' orphan instance for aeson <0.11
 module Data.Aeson.Extra.TH (
     mkValue,
     mkValue',
@@ -47,6 +48,7 @@ mkValue' = mkValue . map f
   where f '\'' = '"'
         f x    = x
 
+#if !MIN_VERSION_aeson(0,11,0)
 -- | From 'aeson-extra'
 --
 -- /Since: aeson-extra-0.3.1.0/
@@ -63,3 +65,4 @@ instance Lift Value where
       where a' = V.toList a
     lift (Object o) = [| Object (HM.fromList . map (first T.pack) $ o') |]
       where o' = map (first T.unpack) . HM.toList $ o
+#endif
