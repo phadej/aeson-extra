@@ -1,4 +1,9 @@
-{-# LANGUAGE DeriveDataTypeable, DeriveFunctor, TypeFamilies, DeriveFoldable, DeriveTraversable #-}
+{-# LANGUAGE CPP                #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveFoldable     #-}
+{-# LANGUAGE DeriveFunctor      #-}
+{-# LANGUAGE DeriveTraversable  #-}
+{-# LANGUAGE TypeFamilies       #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 -----------------------------------------------------------------------------
 -- |
@@ -26,15 +31,19 @@ import Prelude        ()
 import Prelude.Compat
 
 import Data.Aeson.Compat
+import Data.Data             (Data)
 import Data.Functor.Foldable
-import Data.HashMap.Strict (HashMap)
-import Data.Data (Data)
-import Data.Text (Text)
-import Data.Scientific (Scientific)
-import Data.Typeable (Typeable)
-import Data.Vector (Vector)
+import Data.HashMap.Strict   (HashMap)
+import Data.Scientific       (Scientific)
+import Data.Text             (Text)
+import Data.Typeable         (Typeable)
+import Data.Vector           (Vector)
 
+#if !(MIN_VERSION_recursion_schemes(5,0,0))
+#define Recursive F.Foldable
+#define Corecursive F.Unfoldable
 import qualified Data.Functor.Foldable as F
+#endif
 
 -- | A JSON \"object\" (key\/value map).
 --
@@ -60,7 +69,7 @@ data ValueF a
 
 type instance Base Value = ValueF
 
-instance F.Foldable Value where
+instance Recursive Value where
     project (Object o) = ObjectF o
     project (Array a)  = ArrayF a
     project (String s) = StringF s
@@ -68,7 +77,7 @@ instance F.Foldable Value where
     project (Bool b)   = BoolF b
     project Null       = NullF
 
-instance F.Unfoldable Value where
+instance Corecursive Value where
     embed (ObjectF o) = Object o
     embed (ArrayF a)  = Array a
     embed (StringF s) = String s

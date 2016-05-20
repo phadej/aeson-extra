@@ -6,10 +6,10 @@ module Orphans where
 import           Control.Applicative
 #endif
 
+#if !MIN_VERSION_quickcheck_instances(0,3,12)
 import Data.Vector as V
 import Test.Tasty.QuickCheck
 
-#if !MIN_VERSION_quickcheck_instances(0,3,12)
 instance Arbitrary a => Arbitrary (Vector a) where
   arbitrary = V.fromList <$> arbitrary
   shrink    =  fmap V.fromList . shrink . V.toList
