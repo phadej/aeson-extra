@@ -3,7 +3,7 @@
 -- see: https://github.com/sol/hpack
 
 name:           aeson-extra
-version:        0.3.1.1
+version:        0.3.2.0
 synopsis:       Extra goodies for aeson
 description:    Package provides extra funcitonality on top of @aeson@ and @aeson-compat@
 category:       Web
@@ -33,6 +33,7 @@ library
       base                     >=4.6  && <4.10
     , aeson                    >=0.7.0.6 && <0.12
     , aeson-compat             >=0.3.0.0 && <0.4
+    , attoparsec               >=0.11.3.4 && <0.14
     , base-compat              >=0.6.0   && <0.10
     , bytestring               >=0.10 && <0.11
     , containers               >=0.5  && <0.6
@@ -54,6 +55,7 @@ library
       Data.Aeson.Extra.Foldable
       Data.Aeson.Extra.Map
       Data.Aeson.Extra.Merge
+      Data.Aeson.Extra.Stream
       Data.Aeson.Extra.Time
       Data.Aeson.Extra.TH
 

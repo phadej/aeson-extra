@@ -175,6 +175,7 @@ matrix:
         - libgmp-dev
     compiler: ! ': # ghc-head cabal-1.22'
   allow_failures:
+  - env: GHCVER=8.0.1 CABALVER=1.24
   - env: GHCVER=head CABALVER=1.22
 branches:
   only:

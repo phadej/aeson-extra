@@ -7,12 +7,12 @@
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
 module Data.Aeson.Extra.Merge (
-	merge,
-	mergeA,
-	ValueF(..),
-	ObjectF,
-	ArrayF,
-	) where
+    merge,
+    mergeA,
+    ValueF(..),
+    ObjectF,
+    ArrayF,
+    ) where
 
 import Prelude        ()
 import Prelude.Compat

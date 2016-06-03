@@ -18,6 +18,7 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
+    - env: GHCVER=8.0.1 CABALVER=1.24
     - env: GHCVER=head CABALVER=1.22
 
 branches:
