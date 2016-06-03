@@ -38,6 +38,8 @@ module Data.Aeson.Extra (
   ArrayF,
   -- * Merge
   merge,
+  -- * Stream
+  streamDecode,
   -- * Template Haskell
   mkValue,
   mkValue',
@@ -57,6 +59,7 @@ import Data.Aeson.Extra.CollapsedList
 import Data.Aeson.Extra.Foldable
 import Data.Aeson.Extra.Map
 import Data.Aeson.Extra.Merge
+import Data.Aeson.Extra.Stream
 import Data.Aeson.Extra.Time
 import Data.Aeson.Extra.TH
 

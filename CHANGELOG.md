@@ -1,3 +1,7 @@
+# 0.3.2.0
+
+- Add `Data.Aeson.Extra.Stream` with `streamDecode`
+
 # 0.3.1.1 (2016-02-09)
 
 - Support aeson-0.11

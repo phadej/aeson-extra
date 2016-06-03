@@ -47,7 +47,8 @@ main = defaultMain $ testGroup "Tests"
   , utctimeTests
   , zonedtimeTests
   , timeTHTests
-  , mergeTests  
+  , mergeTests
+  , streamTests
   ]
 
 ------------------------------------------------------------------------------
@@ -143,6 +144,39 @@ collapsedListTests = testGroup "collapsedList"
       in prop
   ]
 
+-------------------------------------------------------------------------------
+-- Stream
+-------------------------------------------------------------------------------
+
+streamTests :: TestTree
+streamTests = testGroup "stream"
+    [ streamDecodeTests
+    ]
+  where
+    streamDecodeTests = testGroup "decode" $
+        map (uncurry validTestCase) valids ++
+        [ testCase "ws: empty"     $ streamDecode " [ ] "           @?= ([]      :: [Int], Nothing)
+        , testCase "ws: singleton" $ streamDecode " [ 1 ]"          @?= ([1]     :: [Int], Nothing)
+        , testCase "ws: many"      $ streamDecode " [ 1 , 2, 3 ]  " @?= ([1,2,3] :: [Int], Nothing)
+        -- Errors:
+        , testCase "error begin"   $ streamDecode' ","         @?= ([]    :: [Int], True)
+        , testCase "parses first"  $ streamDecode' "[1,2,3["   @?= ([1,2] :: [Int], True)
+        , testCase "error begin"   $ streamDecode' "[1,2,'a']" @?= ([1,2] :: [Int], True)
+        ]
+
+    validTestCase name value =
+        testCase ("valid " ++ name) $ streamDecode (encode value) @?= (value, Nothing)
+
+    streamDecode' = fmap isJust . streamDecode
+
+    valids :: [(String, [Int])]
+    valids =
+        [ (,) "empty"     []
+        , (,) "singleton" [1]
+        , (,) "many"      [1..200]
+        ]
+
+
 ------------------------------------------------------------------------------
 -- Comparison (.:?) and (.:!)
 ------------------------------------------------------------------------------
@@ -235,7 +269,7 @@ lodashMergeAlg r a' b' = case (a', b') of
   where f (These x y) = r x y
         f (This x)    = x
         f (That x)    = x
-    
+
 mergeTests :: TestTree
 mergeTests = testGroup "Lodash merge examples" $ map f examples
   where
