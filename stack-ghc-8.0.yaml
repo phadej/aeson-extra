@@ -17,3 +17,5 @@ packages:
     git: https://github.com/phadej/time-parsers.git
     commit: bc49be701d00baf9f7f98c6214065a77cbd8d364
   extra-dep: true
+extra-deps:
+- aeson-1.0.0.0

@@ -3,6 +3,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# OPTIONS_GHC -fno-warn-deprecations #-}
 module Main (main) where
 
 #if !MIN_VERSION_base(4,8,0)
@@ -164,8 +165,8 @@ streamTests = testGroup "stream"
         , testCase "error begin"   $ streamDecode' "[1,2,'a']" @?= ([1,2] :: [Int], True)
         ]
 
-    validTestCase name value =
-        testCase ("valid " ++ name) $ streamDecode (encode value) @?= (value, Nothing)
+    validTestCase name v =
+        testCase ("valid " ++ name) $ streamDecode (encode v) @?= (v, Nothing)
 
     streamDecode' = fmap isJust . streamDecode
 
