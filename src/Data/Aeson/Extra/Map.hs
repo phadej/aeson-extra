@@ -13,7 +13,7 @@
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
 -- More or less useful newtypes for writing 'FromJSON' & 'ToJSON' instances
-module Data.Aeson.Extra.Map (
+module Data.Aeson.Extra.Map {-# DEPRECATED "Use aeson-1 TOJSONKey etc functionality" #-} (
   M(..),
   FromJSONKey(..),
   parseIntegralJSONKey,
@@ -25,8 +25,8 @@ module Data.Aeson.Extra.Map (
 import Prelude        ()
 import Prelude.Compat
 
-import Data.Aeson.Compat
-import Data.Aeson.Types  hiding ((.:?))
+import Data.Aeson.Compat (ToJSON (..), FromJSON (..), Value (..), withObject)
+import Data.Aeson.Types  (Parser)
 import Data.Hashable     (Hashable)
 import Data.Monoid       ((<>))
 import Data.Text         (Text)
@@ -44,6 +44,7 @@ import qualified Data.Text.Read      as T
 -- > Just (M {getMap = fromList [(1,1),(2,2)]})
 newtype M a = M { getMap :: a }
   deriving (Eq, Ord, Show, Read, Functor, Foldable, Traversable, Typeable)
+{-# DEPRECATED M "Use aeson-1 TOJSONKey etc functionality" #-}
 
 class FromJSONKey a where
   parseJSONKey :: Text -> Parser a

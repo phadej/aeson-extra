@@ -1,0 +1,21 @@
+resolver: nightly-2016-05-29
+packages:
+- '.'
+- location:
+    git: https://github.com/ekmett/parsers.git
+    commit: f1fff116f277ffb733e6b6e281c3e7a1912e82d9
+  extra-dep: true
+- location:
+    git: https://github.com/ekmett/reducers.git
+    commit: 0e610b18eb48952cc62423eee094d86c952844b4
+  extra-dep: true
+- location:
+    git: https://github.com/ekmett/recursion-schemes.git
+    commit: 129df9bb5c5630781ba0c2dd6def698fce0f44df
+  extra-dep: true
+- location:
+    git: https://github.com/phadej/time-parsers.git
+    commit: bc49be701d00baf9f7f98c6214065a77cbd8d364
+  extra-dep: true
+extra-deps:
+- aeson-1.0.0.0

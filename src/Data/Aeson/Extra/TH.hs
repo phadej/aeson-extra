@@ -15,19 +15,26 @@ module Data.Aeson.Extra.TH (
     mkValue',
     ) where
 
-import Control.Arrow (first)
-import Data.Aeson.Compat
-import Data.Scientific (scientific, coefficient, base10Exponent)
-import Language.Haskell.TH
-import Language.Haskell.TH.Syntax (Lift(..))
+import           Data.Aeson.Compat
+import qualified Data.Text           as T
+import qualified Data.Text.Encoding  as TE
+import           Language.Haskell.TH
 
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as TE
-import qualified Data.Vector as V
-import qualified Data.HashMap.Strict as HM
+#if !MIN_VERSION_aeson_compat(0,3,5)
+import           Data.Aeson.Types (Parser)
+#endif
+
+#if !MIN_VERSION_aeson(0,11,0)
+import           Control.Arrow              (first)
+import qualified Data.HashMap.Strict        as HM
+import           Data.Scientific
+                 (base10Exponent, coefficient, scientific)
+import qualified Data.Vector                as V
+import           Language.Haskell.TH.Syntax (Lift (..))
+#endif
 
 -- | Create a 'Value' from string representation.
--- 
+--
 -- This is useful in tests.
 --
 -- /Since: aeson-extra-0.3.1.0/
