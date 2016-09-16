@@ -44,6 +44,7 @@ import qualified Data.Text.Read      as T
 -- > Just (M {getMap = fromList [(1,1),(2,2)]})
 newtype M a = M { getMap :: a }
   deriving (Eq, Ord, Show, Read, Functor, Foldable, Traversable, Typeable)
+{-# DEPRECATED M "Use aeson-1 TOJSONKey etc functionality" #-}
 
 class FromJSONKey a where
   parseJSONKey :: Text -> Parser a

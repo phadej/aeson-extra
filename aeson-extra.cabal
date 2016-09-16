@@ -44,7 +44,7 @@ library
     , time-parsers             >=0.1.0.0 && <0.2
     , unordered-containers     >=0.2  && <0.3
     , vector                   >=0.10 && <0.12
- if impl(ghc >= 7.8)
+  if impl(ghc >= 7.8)
     exposed-modules:
       Data.Aeson.Extra.SingObject
       Data.Aeson.Extra.SymTag
@@ -68,7 +68,7 @@ test-suite aeson-extra-test
   ghc-options: -Wall
   build-depends:
       base                  >=4.6   && <4.10
-    , aeson-extra           >=0.3.2 && <0.4
+    , aeson-extra           >=0.3.2.0 && <0.4
     , containers            >=0.5  && <0.6
     , these                 >=0.6.2.0 && <0.8
     , time                  >=1.4.2 && <1.7
