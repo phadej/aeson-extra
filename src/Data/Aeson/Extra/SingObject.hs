@@ -19,7 +19,7 @@ module Data.Aeson.Extra.SingObject (
     getSingObject,
     ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import Data.Aeson.Compat
@@ -28,7 +28,15 @@ import Data.Proxy
 import Data.Typeable     (Typeable)
 import GHC.TypeLits
 
-import qualified Data.Text            as T
+import qualified Data.Text as T
+
+#if MIN_VERSION_aeson(1,0,0)
+import Data.Aeson.Internal (JSONPathElement (Key), (<?>))
+import Data.Aeson.Encoding (pair)
+import Data.Aeson.Types    hiding ((.:?))
+
+import qualified Data.HashMap.Strict as HM
+#endif
 
 -- | Singleton value object
 --
@@ -48,6 +56,34 @@ mkSingObject _ = SingObject
 getSingObject :: Proxy s -> SingObject s a -> a
 getSingObject _ (SingObject x) = x
 
+#if MIN_VERSION_aeson(1,0,0)
+
+instance KnownSymbol s => FromJSON1 (SingObject s) where
+    liftParseJSON p _ = withObject ("SingObject "<> show key) $ \obj ->
+        case HM.lookup key obj of
+            Nothing -> fail $ "key " ++ show key ++ " not present"
+            Just v  -> SingObject <$> p v <?> Key key
+     where
+        key = T.pack $ symbolVal (Proxy :: Proxy s)
+
+instance KnownSymbol s => ToJSON1 (SingObject s) where
+    liftToJSON     to _ (SingObject x) =
+        object [ key .= to x]
+      where
+        key = T.pack $ symbolVal (Proxy :: Proxy s)
+    liftToEncoding to _ (SingObject x) =
+        pairs $ pair key $ to x
+      where
+        key = T.pack $ symbolVal (Proxy :: Proxy s)
+
+instance  (KnownSymbol s, FromJSON a) => FromJSON (SingObject s a) where
+    parseJSON = parseJSON1
+
+instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
+    toJSON     = toJSON1
+    toEncoding = toEncoding1
+
+#else
 instance (KnownSymbol s, FromJSON a) => FromJSON (SingObject s a) where
   parseJSON = withObject ("SingObject "<> show key) $ \obj ->
     SingObject <$> obj .: T.pack key
@@ -60,3 +96,4 @@ instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
 #endif
   toJSON (SingObject x) = object [T.pack key .= x]
     where key = symbolVal (Proxy :: Proxy s)
+#endif
