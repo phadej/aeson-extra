@@ -1,3 +1,9 @@
+# 0.4.0.0
+
+- `aeson-1` related changes:
+    - `SingObject` and `CollapsedList` changes
+    - deprecated `Map` module
+
 # 0.3.2.0
 
 - Add `Data.Aeson.Extra.Stream` with `streamDecode`
