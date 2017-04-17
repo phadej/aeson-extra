@@ -44,23 +44,23 @@ script:
 matrix:
   fast_finish: true
   include:
-  - env: GHCVER=7.6.3 CABALVER=1.18
+  - env: GHCVER=7.6.3 CABALVER=1.24
     addons:
       apt:
         sources:
         - hvr-ghc
         packages:
-        - cabal-install-1.18
+        - cabal-install-1.24
         - ghc-7.6.3
         - libgmp-dev
-    compiler: ! ': # ghc-7.6.3 cabal-1.18'
-  - env: GHCVER=7.6.3 CABALVER=1.18 CABALCONFIG=aeson-0.7.0.6.cabal.config
+    compiler: ! ': # ghc-7.6.3 cabal-1.24'
+  - env: GHCVER=7.6.3 CABALVER=1.24 CABALCONFIG=aeson-0.7.0.6.cabal.config
     addons:
       apt:
         sources:
         - hvr-ghc
         packages:
-        - cabal-install-1.18
+        - cabal-install-1.24
         - ghc-7.6.3
         - libgmp-dev
     compiler: ! ': # ghc-7.6.3 cabal-1.18  aeson-0.7.0.6.cabal.config'
