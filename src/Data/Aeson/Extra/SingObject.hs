@@ -99,5 +99,6 @@ instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
     where key = symbolVal (Proxy :: Proxy s)
 #endif
 
+-- | @since 0.4.1.0
 instance NFData a => NFData (SingObject s a) where
     rnf (SingObject x) = rnf x
