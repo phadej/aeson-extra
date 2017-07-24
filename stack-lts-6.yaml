@@ -1,7 +1,0 @@
-resolver: lts-6.18
-packages:
-- '.'
-extra-deps:
-- aeson-1.0.0.0
-- aeson-compat-0.3.6
-- scientific-0.3.4.9
