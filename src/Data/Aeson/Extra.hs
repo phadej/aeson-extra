@@ -39,6 +39,7 @@ module Data.Aeson.Extra (
   ArrayF,
   -- * Merge
   merge,
+  lodashMerge,
   -- * Stream
   streamDecode,
   -- * Template Haskell
@@ -57,7 +58,7 @@ import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
 
 import Data.Aeson.Extra.CollapsedList
-import Data.Aeson.Extra.Foldable
+import Data.Aeson.Extra.Recursive
 import Data.Aeson.Extra.Map
 import Data.Aeson.Extra.Merge
 import Data.Aeson.Extra.Stream
