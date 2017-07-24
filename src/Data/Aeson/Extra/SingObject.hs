@@ -22,6 +22,7 @@ module Data.Aeson.Extra.SingObject (
 import Prelude ()
 import Prelude.Compat
 
+import Control.DeepSeq   (NFData (..))
 import Data.Aeson.Compat
 import Data.Monoid       ((<>))
 import Data.Proxy
@@ -97,3 +98,7 @@ instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
   toJSON (SingObject x) = object [T.pack key .= x]
     where key = symbolVal (Proxy :: Proxy s)
 #endif
+
+-- | @since 0.4.1.0
+instance NFData a => NFData (SingObject s a) where
+    rnf (SingObject x) = rnf x

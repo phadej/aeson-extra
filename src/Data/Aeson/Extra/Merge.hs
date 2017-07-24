@@ -19,25 +19,13 @@ import Prelude.Compat
 
 import Data.Aeson.Compat
 import Data.Aeson.Extra.Foldable
+import Data.These (These (..))
+import Data.Align (alignWith)
 import Data.Functor.Foldable (project, embed)
 
 -- | Generic merge.
 --
--- For example <https://lodash.com/docs#merge>:
---
--- @
--- lodashMerge :: Value -> Value -> Value
--- lodashMerge x y = merge lodashMergeAlg x y
--- 
--- lodashMergeAlg :: (a -> a -> a) -> ValueF a -> ValueF a -> ValueF a
--- lodashMergeAlg r a' b' = case (a', b') of
---     (ObjectF a, ObjectF b) -> ObjectF $ alignWith f a b
---     (ArrayF a,  ArrayF b)  -> ArrayF $ alignWith f a b
---     (_,         b)         -> b
---   where f (These x y) = r x y
---         f (This x)    = x
---         f (That x)    = x
--- @
+-- For example see 'lodashMerge'.
 --
 -- /Since: aeson-extra-0.3.1.0/
 merge :: (forall a. (a -> a -> a) -> ValueF a -> ValueF a -> ValueF a)
@@ -51,3 +39,21 @@ mergeA :: Functor f
       => (forall a. (a -> a -> f a) -> ValueF a -> ValueF a -> f (ValueF a))
       -> Value -> Value -> f Value
 mergeA f a b = embed <$> f (mergeA f) (project a) (project b)
+
+-- | Example of using 'merge'. see <https://lodash.com/docs#merge>:
+--
+-- /Note:/ not tested against JavaScript lodash, so may disagree in the results.
+--
+-- @since 0.4.1.0
+lodashMerge :: Value -> Value -> Value
+lodashMerge = merge alg
+  where
+    alg :: (a -> a -> a) -> ValueF a -> ValueF a -> ValueF a
+    alg r a' b' = case (a', b') of
+        (ObjectF a, ObjectF b) -> ObjectF $ alignWith f a b
+        (ArrayF a,  ArrayF b)  -> ArrayF $ alignWith f a b
+        (_,         b)         -> b
+      where
+        f (These x y) = r x y
+        f (This x)    = x
+        f (That x)    = x

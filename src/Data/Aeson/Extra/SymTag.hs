@@ -16,6 +16,7 @@ module Data.Aeson.Extra.SymTag (
 import Prelude        ()
 import Prelude.Compat
 
+import Control.DeepSeq   (NFData (..))
 import Data.Aeson.Compat
 import Data.Aeson.Types  hiding ((.:?))
 import Data.Proxy
@@ -48,3 +49,6 @@ instance KnownSymbol s => ToJSON (SymTag s) where
   toEncoding _ = toEncoding (symbolVal (Proxy :: Proxy s))
 #endif
   toJSON _ = toJSON (symbolVal (Proxy :: Proxy s))
+
+instance NFData (SymTag s) where
+    rnf SymTag = ()

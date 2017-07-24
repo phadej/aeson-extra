@@ -1,7 +1,0 @@
-flags: {}
-packages:
-- '.'
-extra-deps:
-- aeson-compat-0.3.0.0
-- time-parsers-0.1.0.0
-resolver: nightly-2015-12-25
