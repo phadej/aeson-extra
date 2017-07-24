@@ -21,8 +21,6 @@ import           Test.QuickCheck.Instances ()
 import           Test.Tasty
 import           Test.Tasty.HUnit
 import           Test.Tasty.QuickCheck
-import Data.These (These (..))
-import Data.Align (alignWith)
 
 import qualified Data.HashMap.Lazy as H
 
@@ -258,18 +256,6 @@ timeTHTests =
 ------------------------------------------------------------------------------
 -- Merge tests
 ------------------------------------------------------------------------------
-
-lodashMerge :: Value -> Value -> Value
-lodashMerge x y = merge lodashMergeAlg x y
-
-lodashMergeAlg :: (a -> a -> a) -> ValueF a -> ValueF a -> ValueF a
-lodashMergeAlg r a' b' = case (a', b') of
-    (ObjectF a, ObjectF b) -> ObjectF $ alignWith f a b
-    (ArrayF a,  ArrayF b)  -> ArrayF $ alignWith f a b
-    (_,         b)         -> b
-  where f (These x y) = r x y
-        f (This x)    = x
-        f (That x)    = x
 
 mergeTests :: TestTree
 mergeTests = testGroup "Lodash merge examples" $ map f examples

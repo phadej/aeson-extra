@@ -50,5 +50,6 @@ instance KnownSymbol s => ToJSON (SymTag s) where
 #endif
   toJSON _ = toJSON (symbolVal (Proxy :: Proxy s))
 
+-- | @since 0.4.1.0
 instance NFData (SymTag s) where
     rnf SymTag = ()

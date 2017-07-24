@@ -9,6 +9,7 @@
 module Data.Aeson.Extra.Merge (
     merge,
     mergeA,
+    lodashMerge,
     ValueF(..),
     ObjectF,
     ArrayF,
@@ -18,7 +19,7 @@ import Prelude        ()
 import Prelude.Compat
 
 import Data.Aeson.Compat
-import Data.Aeson.Extra.Foldable
+import Data.Aeson.Extra.Recursive
 import Data.These (These (..))
 import Data.Align (alignWith)
 import Data.Functor.Foldable (project, embed)

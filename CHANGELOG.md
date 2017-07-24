@@ -1,8 +1,9 @@
-# 0.4.1.0
+# 0.4.1.0 (2017-07-24)
 
 - GHC-8.2 support
 - add `NFData SingObject` and `NFData SymTag` instances
 - add `lodashMerge`
+- rename `Foldable` to `Recursive` (the old module is still there).
 
 # 0.4.0.0
 

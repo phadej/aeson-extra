@@ -56,9 +56,10 @@ library
       Data.Aeson.Extra.Foldable
       Data.Aeson.Extra.Map
       Data.Aeson.Extra.Merge
+      Data.Aeson.Extra.Recursive
       Data.Aeson.Extra.Stream
-      Data.Aeson.Extra.Time
       Data.Aeson.Extra.TH
+      Data.Aeson.Extra.Time
 
   default-language: Haskell2010
 
