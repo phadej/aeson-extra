@@ -1,3 +1,8 @@
+# 0.4.1.0
+
+- GHC-8.2 support
+- add `NFData SingObject` and `NFData SymTag` instances
+
 # 0.4.0.0
 
 - `aeson-1` related changes:
