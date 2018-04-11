@@ -22,18 +22,18 @@ module Data.Aeson.Extra.SingObject (
 import Prelude ()
 import Prelude.Compat
 
-import Control.DeepSeq   (NFData (..))
+import Control.DeepSeq       (NFData (..))
 import Data.Aeson.Compat
-import Data.Monoid       ((<>))
-import Data.Proxy
-import Data.Typeable     (Typeable)
-import GHC.TypeLits
+import Data.Proxy            (Proxy (..))
+import Data.Semigroup.Compat ((<>))
+import Data.Typeable         (Typeable)
+import GHC.TypeLits          (KnownSymbol, Symbol, symbolVal)
 
 import qualified Data.Text as T
 
 #if MIN_VERSION_aeson(1,0,0)
-import Data.Aeson.Internal (JSONPathElement (Key), (<?>))
 import Data.Aeson.Encoding (pair)
+import Data.Aeson.Internal (JSONPathElement (Key), (<?>))
 import Data.Aeson.Types    hiding ((.:?))
 
 import qualified Data.HashMap.Strict as HM
@@ -48,7 +48,7 @@ import qualified Data.HashMap.Strict as HM
 -- > "{\"value\":42}"
 --
 -- /Available with: base >=4.7/
-newtype SingObject (s ::Symbol) a = SingObject a
+newtype SingObject (s :: Symbol) a = SingObject a
   deriving (Eq, Ord, Show, Read, Functor, Foldable, Traversable, Typeable)
 
 mkSingObject :: Proxy s -> a -> SingObject s a
