@@ -22,15 +22,16 @@ module Data.Aeson.Extra.Map {-# DEPRECATED "Use aeson-1 TOJSONKey etc functional
   ToJSONMap(..),
   ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
-import Data.Aeson.Compat (ToJSON (..), FromJSON (..), Value (..), withObject)
-import Data.Aeson.Types  (Parser)
-import Data.Hashable     (Hashable)
-import Data.Monoid       ((<>))
-import Data.Text         (Text)
-import Data.Typeable     (Typeable)
+import Data.Aeson.Compat
+       (FromJSON (..), ToJSON (..), Value (..), withObject)
+import Data.Aeson.Types      (Parser)
+import Data.Hashable         (Hashable)
+import Data.Semigroup.Compat ((<>))
+import Data.Text             (Text)
+import Data.Typeable         (Typeable)
 
 import qualified Data.HashMap.Strict as H
 import qualified Data.Map            as Map

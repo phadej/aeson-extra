@@ -5,7 +5,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Data.Aeson.Extra.SymTag
--- Copyright   :  (C) 2015-2016 Oleg Grenrus
+-- Copyright   :  (C) 2015-2018 Oleg Grenrus
 -- License     :  BSD3
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
@@ -13,14 +13,14 @@ module Data.Aeson.Extra.SymTag (
     SymTag(..),
     ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import Control.DeepSeq   (NFData (..))
 import Data.Aeson.Compat
 import Data.Aeson.Types  hiding ((.:?))
-import Data.Proxy
-import GHC.TypeLits
+import Data.Proxy        (Proxy (..))
+import GHC.TypeLits      (KnownSymbol, Symbol, symbolVal)
 
 import qualified Data.Text as T
 
