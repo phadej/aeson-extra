@@ -1,3 +1,7 @@
+# 0.4.1.2 (2019-06-02)
+
+- these-1 support
+
 # 0.4.1.1 (2018-04-11)
 
 - base-compat-0.10 support
