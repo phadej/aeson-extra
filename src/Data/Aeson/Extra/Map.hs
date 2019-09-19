@@ -33,10 +33,10 @@ import Data.Semigroup.Compat ((<>))
 import Data.Text             (Text)
 import Data.Typeable         (Typeable)
 
-import qualified Data.HashMap.Strict as H
+import qualified Data.HashMap.Strict as HM
 import qualified Data.Map            as Map
 import qualified Data.Text           as T
-import qualified Data.Text.Lazy      as TL
+import qualified Data.Text.Lazy      as LT
 import qualified Data.Text.Read      as T
 
 -- | A wrapper type to parse arbitrary maps
@@ -51,26 +51,26 @@ class FromJSONKey a where
   parseJSONKey :: Text -> Parser a
 
 instance FromJSONKey Text where parseJSONKey = pure
-instance FromJSONKey TL.Text where parseJSONKey = pure . TL.fromStrict
+instance FromJSONKey LT.Text where parseJSONKey = pure . LT.fromStrict
 instance FromJSONKey String where parseJSONKey = pure . T.unpack
 instance FromJSONKey Int where parseJSONKey = parseIntegralJSONKey
 instance FromJSONKey Integer where parseJSONKey = parseIntegralJSONKey
 
 parseIntegralJSONKey :: Integral a => Text -> Parser a
-parseIntegralJSONKey t = case (T.signed T.decimal) t of
+parseIntegralJSONKey t = case T.signed T.decimal t of
   Right (v, left) | T.null left  -> pure v
                   | otherwise    -> fail $ "Garbage left: " <> T.unpack left
   Left err                       -> fail err
 
 class FromJSONMap m k v | m -> k v where
-  parseJSONMap :: H.HashMap Text Value -> Parser m
+  parseJSONMap :: HM.HashMap Text Value -> Parser m
 
-instance (Eq k, Hashable k, FromJSONKey k, FromJSON v) => FromJSONMap (H.HashMap k v) k v where
-  parseJSONMap = fmap H.fromList . traverse f . H.toList
+instance (Eq k, Hashable k, FromJSONKey k, FromJSON v) => FromJSONMap (HM.HashMap k v) k v where
+  parseJSONMap = fmap HM.fromList . traverse f . HM.toList
     where f (k, v) = (,) <$> parseJSONKey k <*> parseJSON v
 
 instance (Ord k, FromJSONKey k, FromJSON v) => FromJSONMap (Map.Map k v) k v where
-  parseJSONMap = fmap Map.fromList . traverse f . H.toList
+  parseJSONMap = fmap Map.fromList . traverse f . HM.toList
     where f (k, v) = (,) <$> parseJSONKey k <*> parseJSON v
 
 instance (FromJSONMap m k v) => FromJSON (M m) where
@@ -81,20 +81,20 @@ class ToJSONKey a where
   toJSONKey :: a -> Text
 
 instance ToJSONKey Text where toJSONKey = id
-instance ToJSONKey TL.Text where toJSONKey = TL.toStrict
+instance ToJSONKey LT.Text where toJSONKey = LT.toStrict
 instance ToJSONKey String where toJSONKey = T.pack
 instance ToJSONKey Int where toJSONKey = T.pack . show
 instance ToJSONKey Integer where toJSONKey = T.pack . show
 
 class ToJSONMap m k v | m -> k v where
-  toJSONMap :: m -> H.HashMap Text Value
+  toJSONMap :: m -> HM.HashMap Text Value
 
-instance (ToJSONKey k, ToJSON v) => ToJSONMap (H.HashMap k v) k v where
-  toJSONMap = H.fromList . fmap f . H.toList
+instance (ToJSONKey k, ToJSON v) => ToJSONMap (HM.HashMap k v) k v where
+  toJSONMap = HM.fromList . fmap f . HM.toList
     where f (k, v) = (toJSONKey k, toJSON v)
 
 instance (ToJSONKey k, ToJSON v) => ToJSONMap (Map.Map k v) k v where
-  toJSONMap = H.fromList . fmap f . Map.toList
+  toJSONMap = HM.fromList . fmap f . Map.toList
     where f (k, v) = (toJSONKey k, toJSON v)
 
 instance (ToJSONMap m k v) => ToJSON (M m) where

@@ -28,12 +28,12 @@ streamParse = start
         A.Done bs' _    -> first bs'
         A.Fail _ _ err  -> ([], Just err)
     first bs = case A.parse (lexemeChar ']') bs of
-        A.Done _ _      -> ([], Nothing)
-        A.Fail _ _ _    -> go bs
+        A.Done {}       -> ([], Nothing)
+        A.Fail {}       -> go bs
     go bs = case A.parse valueEnd bs of
         A.Done _   (r, False) -> ([r], Nothing)
         A.Done bs' (r, True)  -> case go bs' of
-            ~(rs, end)   -> (r:rs, end)
+            ~(rs, end)  -> (r:rs, end)
         A.Fail _ _ err  -> ([], Just err)
     valueEnd = do
         v <- value
