@@ -49,7 +49,7 @@ module Data.Aeson.Extra (
   module Data.Aeson.Compat,
   ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import Data.Aeson.Compat
@@ -58,12 +58,12 @@ import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
 
 import Data.Aeson.Extra.CollapsedList
-import Data.Aeson.Extra.Recursive
 import Data.Aeson.Extra.Map
 import Data.Aeson.Extra.Merge
+import Data.Aeson.Extra.Recursive
 import Data.Aeson.Extra.Stream
-import Data.Aeson.Extra.Time
 import Data.Aeson.Extra.TH
+import Data.Aeson.Extra.Time
 
 #if MIN_VERSION_base(4,7,0)
 import Data.Aeson.Extra.SingObject

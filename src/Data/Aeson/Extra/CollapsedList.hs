@@ -31,7 +31,7 @@ import Data.Typeable (Typeable)
 #endif
 
 import qualified Data.Foldable       as Foldable
-import qualified Data.HashMap.Strict as H
+import qualified Data.HashMap.Strict as HM
 
 #if MIN_VERSION_aeson(0,10,0)
 import qualified Data.Text as T
@@ -107,7 +107,7 @@ instance (FromJSON1 f, Alternative f, FromJSON a) => FromJSON (CollapsedList f a
 -- > Just (V [1,2,3,4])
 parseCollapsedList :: (FromJSON a, FromJSON1 f, Alternative f) => Object -> Text -> Parser (f a)
 parseCollapsedList obj key =
-    case H.lookup key obj of
+    case HM.lookup key obj of
         Nothing   -> pure Control.Applicative.empty
         Just v    -> modifyFailure addKeyName $ (getCollapsedList <$> parseJSON v) -- <?> Key key
   where
@@ -147,7 +147,7 @@ instance (ToJSON a, ToJSON (f a), Foldable f) => ToJSON (CollapsedList f a) wher
 -- > Just (V [1,2,3,4])
 parseCollapsedList :: (FromJSON a, FromJSON (f a), Alternative f) => Object -> Text -> Parser (f a)
 parseCollapsedList obj key =
-    case H.lookup key obj of
+    case HM.lookup key obj of
         Nothing   -> pure Control.Applicative.empty
 #if MIN_VERSION_aeson(0,10,0)
         Just v    -> modifyFailure addKeyName $ (getCollapsedList <$> parseJSON v) -- <?> Key key

@@ -58,6 +58,9 @@ library
     , unordered-containers   >=0.2      && <0.3
     , vector                 >=0.10     && <0.13
 
+  if !impl(ghc >=8.2)
+    build-depends: bifunctors >=5.5.2 && <5.6
+
   if impl(ghc >=7.8)
     exposed-modules:
       Data.Aeson.Extra.SingObject
