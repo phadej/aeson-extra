@@ -1,3 +1,8 @@
+# 0.4.1.3 (2019-10-21)
+
+- support semialign-1.1
+- drop spurious dependency from test-suite
+
 # 0.4.1.2 (2019-06-02)
 
 - these-1 support
