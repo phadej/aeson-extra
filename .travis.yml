@@ -8,7 +8,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.10
+# version: 0.10.1
 #
 version: ~> 1.0
 language: c
@@ -160,5 +160,5 @@ script:
   - rm -f cabal.project.local
   - ${CABAL} v2-build $WITHCOMPILER --disable-tests --disable-benchmarks all
 
-# REGENDATA ("0.10",["--branches","master","--output",".travis.yml","aeson-extra.cabal"])
+# REGENDATA ("0.10.1",["--branches","master","--output",".travis.yml","aeson-extra.cabal"])
 # EOF
