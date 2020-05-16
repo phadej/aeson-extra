@@ -27,7 +27,7 @@ module Data.Aeson.Extra.Recursive (
     ArrayF,
     ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import Data.Aeson.Compat

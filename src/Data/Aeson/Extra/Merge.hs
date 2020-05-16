@@ -15,14 +15,14 @@ module Data.Aeson.Extra.Merge (
     ArrayF,
     ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import Data.Aeson.Compat
 import Data.Aeson.Extra.Recursive
-import Data.These (These (..))
-import Data.Align (alignWith)
-import Data.Functor.Foldable (project, embed)
+import Data.Align                 (alignWith)
+import Data.Functor.Foldable      (embed, project)
+import Data.These                 (These (..))
 
 -- | Generic merge.
 --
