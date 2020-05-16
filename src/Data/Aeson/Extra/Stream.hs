@@ -10,16 +10,16 @@ module Data.Aeson.Extra.Stream (
     streamDecode,
     ) where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
-import Control.Applicative ((<|>), many)
+import Control.Applicative (many, (<|>))
 import Data.Aeson.Compat   (FromJSON, Result (..), Value, fromJSON)
 import Data.Aeson.Parser   (value)
 
-import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Attoparsec.ByteString.Char8 as A8
 import qualified Data.Attoparsec.ByteString.Lazy  as A
+import qualified Data.ByteString.Lazy             as LBS
 
 streamParse :: LBS.ByteString -> ([Value], Maybe String)
 streamParse = start

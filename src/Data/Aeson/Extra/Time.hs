@@ -13,7 +13,7 @@ module Data.Aeson.Extra.Time (
     Z(..),
     )where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
 import Data.Aeson.Compat
@@ -21,10 +21,10 @@ import Data.Time         (UTCTime, ZonedTime)
 import Data.Typeable     (Typeable)
 
 #if !MIN_VERSION_aeson (0,10,0)
-import Data.Text         (Text)
+import Data.Text (Text)
 
 #if !MIN_VERSION_aeson_compat(0,3,5)
-import           Data.Aeson.Types (Parser)
+import Data.Aeson.Types (Parser)
 #endif
 
 import qualified Data.Time.Parsers as TimeParsers
