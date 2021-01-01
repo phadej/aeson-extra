@@ -16,11 +16,11 @@ module Data.Aeson.Extra.SymTag (
 import Prelude ()
 import Prelude.Compat
 
-import Control.DeepSeq   (NFData (..))
-import Data.Aeson.Compat
-import Data.Aeson.Types  hiding ((.:?))
-import Data.Proxy        (Proxy (..))
-import GHC.TypeLits      (KnownSymbol, Symbol, symbolVal)
+import Control.DeepSeq  (NFData (..))
+import Data.Aeson
+import Data.Aeson.Types hiding ((.:?))
+import Data.Proxy       (Proxy (..))
+import GHC.TypeLits     (KnownSymbol, Symbol, symbolVal)
 
 import qualified Data.Text as T
 

@@ -1,3 +1,9 @@
+# 0.5 (2020-01-01)
+
+- Trim lower bounds
+- Remove `Data.Aeson.Extra.Map` (use recent `aeson`).
+- Remove `Data.Aeson.Time` (use recent `aeson`)
+
 # 0.4.1.2 (2019-06-02)
 
 - these-1 support

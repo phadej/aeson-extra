@@ -23,21 +23,15 @@ import Prelude ()
 import Prelude.Compat
 
 import Control.DeepSeq       (NFData (..))
-import Data.Aeson.Compat
+import Data.Aeson
+import Data.Aeson.Encoding   (pair)
+import Data.Aeson.Internal   (JSONPathElement (Key))
 import Data.Proxy            (Proxy (..))
-import Data.Semigroup.Compat ((<>))
 import Data.Typeable         (Typeable)
 import GHC.TypeLits          (KnownSymbol, Symbol, symbolVal)
 
-import qualified Data.Text as T
-
-#if MIN_VERSION_aeson(1,0,0)
-import Data.Aeson.Encoding (pair)
-import Data.Aeson.Internal (JSONPathElement (Key), (<?>))
-import Data.Aeson.Types    hiding ((.:?))
-
 import qualified Data.HashMap.Strict as HM
-#endif
+import qualified Data.Text           as T
 
 -- | Singleton value object
 --
@@ -56,8 +50,6 @@ mkSingObject _ = SingObject
 
 getSingObject :: Proxy s -> SingObject s a -> a
 getSingObject _ (SingObject x) = x
-
-#if MIN_VERSION_aeson(1,0,0)
 
 instance KnownSymbol s => FromJSON1 (SingObject s) where
     liftParseJSON p _ = withObject ("SingObject "<> show key) $ \obj ->
@@ -83,21 +75,6 @@ instance  (KnownSymbol s, FromJSON a) => FromJSON (SingObject s a) where
 instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
     toJSON     = toJSON1
     toEncoding = toEncoding1
-
-#else
-instance (KnownSymbol s, FromJSON a) => FromJSON (SingObject s a) where
-  parseJSON = withObject ("SingObject "<> show key) $ \obj ->
-    SingObject <$> obj .: T.pack key
-    where key = symbolVal (Proxy :: Proxy s)
-
-instance (KnownSymbol s, ToJSON a) => ToJSON (SingObject s a) where
-#if MIN_VERSION_aeson(0,10,0)
-  toEncoding (SingObject x) = pairs (T.pack key .= x)
-    where key = symbolVal (Proxy :: Proxy s)
-#endif
-  toJSON (SingObject x) = object [T.pack key .= x]
-    where key = symbolVal (Proxy :: Proxy s)
-#endif
 
 -- | @since 0.4.1.0
 instance NFData a => NFData (SingObject s a) where

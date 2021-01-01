@@ -9,66 +9,47 @@
 --
 -- More or less useful newtypes for writing 'FromJSON' & 'ToJSON' instances
 module Data.Aeson.Extra (
-  -- * Strict encoding
-  encodeStrict,
-  -- * Generic maps
-  M(..),
-  FromJSONKey(..),
-  parseIntegralJSONKey,
-  FromJSONMap(..),
-  ToJSONKey(..),
-  ToJSONMap(..),
-#if MIN_VERSION_base(4,7,0)
-  -- * Symbol tag
-  SymTag(..),
-  -- * Singleton object
-  SingObject(..),
-  mkSingObject,
-  getSingObject,
-#endif
-  -- * CollapsedList
-  CollapsedList(..),
-  getCollapsedList,
-  parseCollapsedList,
-  -- * UTCTime
-  U(..),
-  Z(..),
-  -- * Algebra
-  ValueF(..),
-  ObjectF,
-  ArrayF,
-  -- * Merge
-  merge,
-  lodashMerge,
-  -- * Stream
-  streamDecode,
-  -- * Template Haskell
-  mkValue,
-  mkValue',
-  -- * Re-exports
-  module Data.Aeson.Compat,
-  ) where
+    -- * Strict encoding
+    encodeStrict,
+    -- * Symbol tag
+    SymTag(..),
+    -- * Singleton object
+    SingObject(..),
+    mkSingObject,
+    getSingObject,
+    -- * CollapsedList
+    CollapsedList(..),
+    getCollapsedList,
+    parseCollapsedList,
+    -- * Algebra
+    ValueF(..),
+    ObjectF,
+    ArrayF,
+    -- * Merge
+    merge,
+    lodashMerge,
+    -- * Stream
+    streamDecode,
+    -- * Template Haskell
+    mkValue,
+    mkValue',
+) where
 
 import Prelude ()
 import Prelude.Compat
 
-import Data.Aeson.Compat
+import Data.Aeson
 
 import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
 
 import Data.Aeson.Extra.CollapsedList
-import Data.Aeson.Extra.Map
 import Data.Aeson.Extra.Merge
-import Data.Aeson.Extra.Recursive
-import Data.Aeson.Extra.Stream
-import Data.Aeson.Extra.TH
-import Data.Aeson.Extra.Time
-
-#if MIN_VERSION_base(4,7,0)
+import Data.Aeson.Extra.Recursive ()
 import Data.Aeson.Extra.SingObject
+import Data.Aeson.Extra.Stream
 import Data.Aeson.Extra.SymTag
-#endif
+import Data.Aeson.Extra.TH
 
 -- | Like 'encode', but produces strict 'BS.ByteString'.
 --
