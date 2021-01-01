@@ -1,51 +1,34 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE KindSignatures    #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell   #-}
 {-# OPTIONS_GHC -fno-warn-deprecations #-}
 module Main (main) where
 
-#if !MIN_VERSION_base(4,8,0)
-import           Control.Applicative
-#endif
+import Prelude ()
+import Prelude.Compat
 
+import Data.Aeson
+import Data.Aeson.Extra
 
+import Data.Maybe                (isJust)
+import Data.Proxy
+import Data.Vector               (Vector)
+import Test.QuickCheck.Instances ()
+import Test.Tasty
+import Test.Tasty.HUnit
+import Test.Tasty.QuickCheck
 
-import           Data.Map (Map)
-import           Data.Maybe (isJust)
-import           Data.String (fromString)
-import           Data.Time (zonedTimeToUTC, UTCTime(..), Day(..))
-import           Data.Vector (Vector)
-import           Test.QuickCheck.Instances ()
-import           Test.Tasty
-import           Test.Tasty.HUnit
-import           Test.Tasty.QuickCheck
-
-import qualified Data.HashMap.Lazy as H
-
-#if MIN_VERSION_base(4,7,0)
-import           Data.Proxy
-#endif
-
-import           Data.Aeson.Extra
-import           Data.Time.TH
-
-import           Orphans ()
+import Orphans ()
 
 main :: IO ()
 main = defaultMain $ testGroup "Tests"
   [ dotColonMark
   , encodeStrictTests
-  , mTests
-#if MIN_VERSION_base(4,7,0)
   , symTests
   , singObjectTests
-#endif
   , collapsedListTests
-  , utctimeTests
-  , zonedtimeTests
-  , timeTHTests
   , mergeTests
   , streamTests
   ]
@@ -61,26 +44,6 @@ encodeStrictTests = testGroup "encodeStrict"
         prop i = let lhs = decodeStrict . encodeStrict $ i
                      rhs = Just i
                  in lhs === rhs
-
-------------------------------------------------------------------------------
--- M
-------------------------------------------------------------------------------
-
-mTests :: TestTree
-mTests = testGroup "M"
-  [ testCase "decode" $ let lhs = decode "{\"1\": 1, \"2\": 2}" :: Maybe (M (H.HashMap Int Int))
-                            rhs = Just result
-                        in lhs @?= rhs
-  , testProperty "decode . encode" $
-      let prop :: Map Int Int -> Property
-          prop m = let lhs = fmap getMap . decode . encode . M $ m
-                       rhs = Just m
-                   in lhs === rhs
-      in prop
-  ]
-  where result = M $ H.fromList [(1,1),(2,2)]
-
-#if MIN_VERSION_base(4,7,0)
 
 ------------------------------------------------------------------------------
 -- SymTag
@@ -113,8 +76,6 @@ singObjectTests = testGroup "SingObject"
           p = Proxy
       in prop
   ]
-
-#endif
 
 ------------------------------------------------------------------------------
 -- parseCollapsedList
@@ -206,52 +167,6 @@ dotColonMark = testGroup "Operators" $ fmap t [
         ex2 = "{\"value\": 42 }"
         ex3 = "{\"value\": null }"
         t   = testCase "-"
-
-------------------------------------------------------------------------------
--- U & Z
-------------------------------------------------------------------------------
-
-utctimeTests :: TestTree
-utctimeTests = testGroup "U" $
-  [ testCase "base case" $ assertBool "base case" $ isJust simple
-  ] ++ map t timeStrings
-  where simple = decode "\"2015-09-07T08:16:40.807Z\"" :: Maybe U
-        t str = testCase str
-              . assertEqual str simple
-              . decode
-              . fromString
-              $ "\"" ++ str ++ "\""
-
-zonedtimeTests :: TestTree
-zonedtimeTests = testGroup "Z" $
-  [ testCase "base case" $ assertBool "base case" $ isJust simple
-  ] ++ map t timeStrings
-  where simple = decode "\"2015-09-07T08:16:40.807Z\"" :: Maybe Z
-        t str = testCase str
-              . assertEqual str (fmap z simple)
-              . fmap z
-              . decode
-              . fromString
-              $ "\"" ++ str ++ "\""
-        z (Z z') = zonedTimeToUTC z'
-
-timeStrings :: [String]
-timeStrings =
-  [ "2015-09-07T08:16:40.807Z"
-  , "2015-09-07T11:16:40.807+0300"
-  , "2015-09-07 08:16:40.807Z"
-  , "2015-09-07 08:16:40.807 Z"
-  , "2015-09-07 08:16:40.807 +0000"
-  , "2015-09-07 08:16:40.807 +00:00"
-  , "2015-09-07 11:16:40.807 +03:00"
-  , "2015-09-07 05:16:40.807 -03:00"
-  ]
-
-timeTHTests :: TestTree
-timeTHTests =
-    testCase "time TH example" $ assertBool "should be equal" $ lhs == rhs
-      where lhs = UTCTime (ModifiedJulianDay 56789) 123.456
-            rhs = $(mkUTCTime "2014-05-12 00:02:03.456000Z")
 
 ------------------------------------------------------------------------------
 -- Merge tests

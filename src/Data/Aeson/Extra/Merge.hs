@@ -18,7 +18,7 @@ module Data.Aeson.Extra.Merge (
 import Prelude ()
 import Prelude.Compat
 
-import Data.Aeson.Compat
+import Data.Aeson
 import Data.Aeson.Extra.Recursive
 import Data.Align                 (alignWith)
 import Data.Functor.Foldable      (embed, project)

@@ -30,7 +30,7 @@ module Data.Aeson.Extra.Recursive (
 import Prelude ()
 import Prelude.Compat
 
-import Data.Aeson.Compat
+import Data.Aeson
 import Data.Data             (Data)
 import Data.Functor.Foldable
 import Data.HashMap.Strict   (HashMap)

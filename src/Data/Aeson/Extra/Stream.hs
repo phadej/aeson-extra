@@ -14,7 +14,7 @@ import Prelude ()
 import Prelude.Compat
 
 import Control.Applicative (many, (<|>))
-import Data.Aeson.Compat   (FromJSON, Result (..), Value, fromJSON)
+import Data.Aeson          (FromJSON, Result (..), Value, fromJSON)
 import Data.Aeson.Parser   (value)
 
 import qualified Data.Attoparsec.ByteString.Char8 as A8

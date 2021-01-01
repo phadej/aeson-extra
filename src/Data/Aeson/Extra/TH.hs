@@ -15,24 +15,12 @@ module Data.Aeson.Extra.TH (
     mkValue',
     ) where
 
-import Data.Aeson.Compat
 import Language.Haskell.TH
 
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
 
-#if !MIN_VERSION_aeson_compat(0,3,5)
-import Data.Aeson.Types (Parser)
-#endif
-
-#if !MIN_VERSION_aeson(0,11,0)
-import Data.Bifunctor             (first)
-import Data.Scientific            (base10Exponent, coefficient, scientific)
-import Language.Haskell.TH.Syntax (Lift (..))
-
-import qualified Data.HashMap.Strict as HM
-import qualified Data.Vector         as V
-#endif
+import Data.Aeson
 
 -- | Create a 'Value' from string representation.
 --
@@ -55,22 +43,3 @@ mkValue' :: String -> Q Exp
 mkValue' = mkValue . map f
   where f '\'' = '"'
         f x    = x
-
-#if !MIN_VERSION_aeson(0,11,0)
--- | From 'aeson-extra'
---
--- /Since: aeson-extra-0.3.1.0/
-instance Lift Value where
-    lift Null = [| Null |]
-    lift (Bool b) = [| Bool b |]
-    lift (Number n) = [| Number (scientific c e) |]
-      where
-        c = coefficient n
-        e = base10Exponent n
-    lift (String t) = [| String (T.pack s) |]
-      where s = T.unpack t
-    lift (Array a) = [| Array (V.fromList a') |]
-      where a' = V.toList a
-    lift (Object o) = [| Object (HM.fromList . map (first T.pack) $ o') |]
-      where o' = map (first T.unpack) . HM.toList $ o
-#endif
