@@ -1,7 +1,6 @@
 cabal-version:      >=1.10
 name:               aeson-extra
 version:            0.5
-x-revision:         1
 synopsis:           Extra goodies for aeson
 description:
   Package provides extra functionality on top of @aeson@ and @aeson-compat@
