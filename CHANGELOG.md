@@ -1,4 +1,4 @@
-# 0.5 (2020-01-01)
+# 0.5 (2021-03-22)
 
 - Trim lower bounds
 - Remove `Data.Aeson.Extra.Map` (use recent `aeson`).
