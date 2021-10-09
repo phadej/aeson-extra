@@ -22,16 +22,25 @@ module Data.Aeson.Extra.SingObject (
 import Prelude ()
 import Prelude.Compat
 
-import Control.DeepSeq       (NFData (..))
+import Control.DeepSeq     (NFData (..))
 import Data.Aeson
-import Data.Aeson.Encoding   (pair)
-import Data.Aeson.Internal   (JSONPathElement (Key))
-import Data.Proxy            (Proxy (..))
-import Data.Typeable         (Typeable)
-import GHC.TypeLits          (KnownSymbol, Symbol, symbolVal)
+import Data.Aeson.Encoding (pair)
+import Data.Aeson.Internal (JSONPathElement (Key))
+import Data.Proxy          (Proxy (..))
+import Data.String         (fromString)
+import Data.Typeable       (Typeable)
+import GHC.TypeLits        (KnownSymbol, Symbol, symbolVal)
 
-import qualified Data.HashMap.Strict as HM
-import qualified Data.Text           as T
+import qualified Data.Text as T
+
+#if MIN_VERSION_aeson(2,0,0)
+import qualified Data.Aeson.Key    as Key
+import qualified Data.Aeson.KeyMap as KM
+#else
+import qualified Data.HashMap.Strict as KM
+#endif
+
+
 
 -- | Singleton value object
 --
@@ -53,21 +62,21 @@ getSingObject _ (SingObject x) = x
 
 instance KnownSymbol s => FromJSON1 (SingObject s) where
     liftParseJSON p _ = withObject ("SingObject "<> show key) $ \obj ->
-        case HM.lookup key obj of
+        case KM.lookup key obj of
             Nothing -> fail $ "key " ++ show key ++ " not present"
             Just v  -> SingObject <$> p v <?> Key key
      where
-        key = T.pack $ symbolVal (Proxy :: Proxy s)
+        key = fromString $ symbolVal (Proxy :: Proxy s)
 
 instance KnownSymbol s => ToJSON1 (SingObject s) where
     liftToJSON     to _ (SingObject x) =
         object [ key .= to x]
       where
-        key = T.pack $ symbolVal (Proxy :: Proxy s)
+        key = fromString $ symbolVal (Proxy :: Proxy s)
     liftToEncoding to _ (SingObject x) =
         pairs $ pair key $ to x
       where
-        key = T.pack $ symbolVal (Proxy :: Proxy s)
+        key = fromString $ symbolVal (Proxy :: Proxy s)
 
 instance  (KnownSymbol s, FromJSON a) => FromJSON (SingObject s a) where
     parseJSON = parseJSON1

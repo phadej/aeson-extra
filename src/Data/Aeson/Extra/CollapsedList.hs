@@ -30,8 +30,15 @@ import Data.Typeable (Typeable)
 #endif
 
 import qualified Data.Foldable       as Foldable
-import qualified Data.HashMap.Strict as HM
 import qualified Data.Text           as T
+
+#if MIN_VERSION_aeson(2,0,0)
+import qualified Data.Aeson.Key as Key
+import qualified Data.Aeson.KeyMap as KM
+#else
+import qualified Data.HashMap.Strict as KM
+#endif
+
 
 
 -- | Collapsed list, singleton is represented as the value itself in JSON encoding.
@@ -102,9 +109,14 @@ instance (FromJSON1 f, Alternative f, FromJSON a) => FromJSON (CollapsedList f a
 -- > λ > decode "{\"value\": [1, 2, 3, 4]}" :: Maybe V
 -- > Just (V [1,2,3,4])
 parseCollapsedList :: (FromJSON a, FromJSON1 f, Alternative f) => Object -> Text -> Parser (f a)
-parseCollapsedList obj key =
-    case HM.lookup key obj of
+parseCollapsedList obj key' =
+    case KM.lookup key obj of
         Nothing   -> pure Control.Applicative.empty
         Just v    -> modifyFailure addKeyName $ (getCollapsedList <$> parseJSON v) -- <?> Key key
   where
-    addKeyName = (mappend ("failed to parse field " `mappend` T.unpack key `mappend`": "))
+#if MIN_VERSION_aeson(2,0,0)
+    key = Key.fromText key'
+#else
+    key = key'
+#endif
+    addKeyName = (mappend ("failed to parse field " `mappend` T.unpack key' `mappend`": "))
