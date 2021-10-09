@@ -45,6 +45,10 @@ import Data.Vector           (Vector)
 import qualified Data.Functor.Foldable as F
 #endif
 
+#if MIN_VERSION_aeson(2,0,0)
+import qualified Data.Aeson.KeyMap as KM
+#endif
+
 -- | A JSON \"object\" (key\/value map).
 --
 -- /Since: aeson-extra-0.3.1.0/
@@ -70,7 +74,11 @@ data ValueF a
 type instance Base Value = ValueF
 
 instance Recursive Value where
+#if MIN_VERSION_aeson(2,0,0)
+    project (Object o) = ObjectF (KM.toHashMapText o)
+#else
     project (Object o) = ObjectF o
+#endif
     project (Array a)  = ArrayF a
     project (String s) = StringF s
     project (Number n) = NumberF n
@@ -78,7 +86,11 @@ instance Recursive Value where
     project Null       = NullF
 
 instance Corecursive Value where
+#if MIN_VERSION_aeson(2,0,0)
+    embed (ObjectF o) = Object (KM.fromHashMapText o)
+#else
     embed (ObjectF o) = Object o
+#endif
     embed (ArrayF a)  = Array a
     embed (StringF s) = String s
     embed (NumberF n) = Number n

@@ -1,7 +1,6 @@
 cabal-version:      >=1.10
 name:               aeson-extra
-version:            0.5
-x-revision:         2
+version:            0.5.1
 synopsis:           Extra goodies for aeson
 description:
   Package provides extra functionality on top of @aeson@ and @aeson-compat@
@@ -37,7 +36,7 @@ library
   hs-source-dirs:   src
   ghc-options:      -Wall
   build-depends:
-      aeson                  >=1.5.4.1  && <1.6
+      aeson                  >=1.5.4.1  && <1.6 || >=2.0 && <2.1
     , attoparsec             >=0.11.3.4 && <0.15
     , attoparsec-iso8601     >=1.0      && <1.1
     , base                   >=4.7      && <4.16
