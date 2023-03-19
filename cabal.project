@@ -1,2 +1,4 @@
 packages: .
 tests: True
+
+allow-newer: recursion-schemes-5.2.2.4:template-haskell
