@@ -24,7 +24,7 @@ import GHC.TypeLits     (KnownSymbol, Symbol, symbolVal)
 
 import qualified Data.Text as T
 
--- | Singleton string encoded and decoded as ifself.
+-- | Singleton string encoded and decoded as itself.
 --
 -- > λ> encode (SymTag :: SymTag "foobar")
 -- > "\"foobar\""
