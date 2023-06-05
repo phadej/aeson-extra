@@ -17,11 +17,11 @@ import Test.Tasty.HUnit
 import qualified Data.HashMap.Strict as HM
 
 empty :: Value
-empty = $(mkValue' "{}")
+empty = $(mkValue "{}")
 
 recurseTests :: TestTree
 recurseTests = testGroup "Recurse examples"
-  [ testCase "strip nulls" $ stripNulls $(mkValue' "{\"value\": null}") @?= empty
+  [ testCase "strip nulls" $ stripNulls $(mkValue' "{'value': null}") @?= empty
   ]
 
 stripNulls :: Value -> Value
