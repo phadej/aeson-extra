@@ -18,7 +18,7 @@
 -- stripNulls :: Value -> Value
 -- stripNulls = 'cata' ('embed' . f)
 --  where
---    f (ObjectF a) = ObjectF $ HM.filter (== Null) a
+--    f (ObjectF a) = ObjectF $ HM.filter (/= Null) a
 --    f x = x
 -- @
 module Data.Aeson.Extra.Recursive (
