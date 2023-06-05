@@ -58,6 +58,8 @@ recurseTests = testGroup "Recurse examples"
         f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
   , testCase "nested sorting; keys . arrays" $ let f = sortKeys . sortArrays in
         f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
+  , testCase "nested sorting; arrays and keys" $ let f = sortArraysAndKeys in
+        f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
   ]
 
 stripNulls :: Value -> Value
@@ -73,4 +75,10 @@ sortArrays = cata (embed . f) where
 sortKeys:: Value -> Value
 sortKeys = cata (embed . f) where
   f (ObjectF a) = ObjectF (HM.fromList . sort $ HM.toList a)
+  f x = x
+
+sortArraysAndKeys:: Value -> Value
+sortArraysAndKeys = cata (embed . f) where
+  f (ObjectF a) = ObjectF (HM.fromList . sort $ HM.toList a)
+  f (ArrayF xs) = ArrayF (V.fromList . sort $ V.toList xs)
   f x = x
