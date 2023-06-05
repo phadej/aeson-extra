@@ -54,7 +54,9 @@ recurseTests = testGroup "Recurse examples"
   , testCase "sort arrays . strip nulls . sort keys" $ let f = sortArrays . stripNulls . sortKeys in
         f $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }") @?= combined
 
-  , testCase "nested sorting" $ let f = sortArrays . sortKeys in
+  , testCase "nested sorting; arrays . keys" $ let f = sortArrays . sortKeys in
+        f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
+  , testCase "nested sorting; keys . arrays" $ let f = sortKeys . sortArrays in
         f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
   ]
 
