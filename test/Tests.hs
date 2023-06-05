@@ -21,6 +21,7 @@ import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck
 
 import Orphans ()
+import Recurse (recurseTests)
 
 main :: IO ()
 main = defaultMain $ testGroup "Tests"
@@ -31,6 +32,7 @@ main = defaultMain $ testGroup "Tests"
   , collapsedListTests
   , mergeTests
   , streamTests
+  , recurseTests
   ]
 
 ------------------------------------------------------------------------------
