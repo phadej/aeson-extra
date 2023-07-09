@@ -69,12 +69,34 @@ getCollapsedList :: CollapsedList f a -> f a
 getCollapsedList (CollapsedList l) = l
 
 instance (FromJSON1 f, Alternative f) => FromJSON1 (CollapsedList f) where
+#if MIN_VERSION_aeson(2,2,0)
+    liftParseJSON o p _ v = CollapsedList <$> case v of
+        Null    -> pure Control.Applicative.empty
+        Array _ -> liftParseJSON o p (listParser p) v
+        x       -> pure <$> p x
+#else
     liftParseJSON p _ v = CollapsedList <$> case v of
         Null    -> pure Control.Applicative.empty
         Array _ -> liftParseJSON p (listParser p) v
         x       -> pure <$> p x
+#endif
 
 instance (ToJSON1 f, Foldable f) => ToJSON1 (CollapsedList f) where
+#if MIN_VERSION_aeson(2,2,0)
+    liftToEncoding o to _ (CollapsedList l) = case l' of
+        []   -> toEncoding Null
+        [x]  -> to x
+        _    -> liftToEncoding o to (listEncoding to) l
+      where
+        l' = Foldable.toList l
+
+    liftToJSON o to _ (CollapsedList l) = case l' of
+        []   -> toJSON Null
+        [x]  -> to x
+        _    -> liftToJSON o to (listValue to) l
+      where
+        l' = Foldable.toList l
+#else
     liftToEncoding to _ (CollapsedList l) = case l' of
         []   -> toEncoding Null
         [x]  -> to x
@@ -88,6 +110,7 @@ instance (ToJSON1 f, Foldable f) => ToJSON1 (CollapsedList f) where
         _    -> liftToJSON to (listValue to) l
       where
         l' = Foldable.toList l
+#endif
 
 instance (ToJSON1 f, Foldable f, ToJSON a) => ToJSON (CollapsedList f a) where
     toJSON         = toJSON1

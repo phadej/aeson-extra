@@ -25,7 +25,6 @@ import Prelude.Compat
 import Control.DeepSeq     (NFData (..))
 import Data.Aeson
 import Data.Aeson.Encoding (pair)
-import Data.Aeson.Internal (JSONPathElement (Key))
 import Data.Proxy          (Proxy (..))
 import Data.String         (fromString)
 import Data.Typeable       (Typeable)
@@ -40,6 +39,11 @@ import qualified Data.Aeson.KeyMap as KM
 import qualified Data.HashMap.Strict as KM
 #endif
 
+#if MIN_VERSION_aeson(2,2,0)
+import Data.Aeson.Types (JSONPathElement (Key))
+#else
+import Data.Aeson.Internal (JSONPathElement (Key))
+#endif
 
 
 -- | Singleton value object
@@ -61,14 +65,33 @@ getSingObject :: Proxy s -> SingObject s a -> a
 getSingObject _ (SingObject x) = x
 
 instance KnownSymbol s => FromJSON1 (SingObject s) where
+#if MIN_VERSION_aeson(2,2,0)
+    liftParseJSON _ p _ = withObject ("SingObject "<> show key) $ \obj ->
+        case KM.lookup key obj of
+            Nothing -> fail $ "key " ++ show key ++ " not present"
+            Just v  -> SingObject <$> p v <?> Key key
+     where
+        key = fromString $ symbolVal (Proxy :: Proxy s)
+#else
     liftParseJSON p _ = withObject ("SingObject "<> show key) $ \obj ->
         case KM.lookup key obj of
             Nothing -> fail $ "key " ++ show key ++ " not present"
             Just v  -> SingObject <$> p v <?> Key key
      where
         key = fromString $ symbolVal (Proxy :: Proxy s)
+#endif
 
 instance KnownSymbol s => ToJSON1 (SingObject s) where
+#if MIN_VERSION_aeson(2,2,0)
+    liftToJSON    _ to _ (SingObject x) =
+        object [ key .= to x]
+      where
+        key = fromString $ symbolVal (Proxy :: Proxy s)
+    liftToEncoding _ to _ (SingObject x) =
+        pairs $ pair key $ to x
+      where
+        key = fromString $ symbolVal (Proxy :: Proxy s)
+#else
     liftToJSON     to _ (SingObject x) =
         object [ key .= to x]
       where
@@ -77,6 +100,7 @@ instance KnownSymbol s => ToJSON1 (SingObject s) where
         pairs $ pair key $ to x
       where
         key = fromString $ symbolVal (Proxy :: Proxy s)
+#endif
 
 instance  (KnownSymbol s, FromJSON a) => FromJSON (SingObject s a) where
     parseJSON = parseJSON1

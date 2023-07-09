@@ -1,4 +1,8 @@
-# 0.5.1.1. (2022-06-15)
+# 0.5.1.3 (2023-07-09)
+
+- Support `aeson-2.2.0.0`
+
+# 0.5.1.1 (2022-06-15)
 
 - Support `aeson-2.1.0.0`
 - Drop unused package dependencies
