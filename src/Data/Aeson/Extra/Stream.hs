@@ -8,7 +8,7 @@
 --
 module Data.Aeson.Extra.Stream (
     streamDecode,
-    ) where
+) where
 
 import Prelude ()
 import Prelude.Compat
