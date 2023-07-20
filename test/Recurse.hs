@@ -11,6 +11,7 @@ import Data.Aeson
 import Data.Aeson.Extra
 import Data.Functor.Foldable (cata, embed)
 import Data.List (sort, sortOn)
+import Data.Text (Text)
 
 import Test.QuickCheck.Instances ()
 import Test.Tasty
@@ -97,39 +98,31 @@ recurseTests = testGroup "Recurse examples"
       ]
   ]
 
-stripNulls :: Value -> Value
+transformArrays :: ([Value] -> [Value]) -> Value -> Value
+transformArrays t = cata (embed . f) where
+  f (ArrayF xs) = ArrayF (V.fromList . t $ V.toList xs)
+  f x = x
+
+transformKeys:: ([(Text, Value)] -> [(Text, Value)]) -> Value -> Value
+transformKeys t = cata (embed . f) where
+  f (ObjectF a) = ObjectF (HM.fromList . t $ HM.toList a)
+  f x = x
+
+transform :: ([(Text, Value)] -> [(Text, Value)]) -> ([Value] -> [Value]) -> Value -> Value
+transform to ta = cata (embed . f) where
+  f (ObjectF a) = ObjectF (HM.fromList . to $ HM.toList a)
+  f (ArrayF xs) = ArrayF (V.fromList . ta $ V.toList xs)
+  f x = x
+
+stripNulls, sortArrays, sortDownArrays, sortKeys, sortDownKeys, sortArraysAndKeys, sortDownArraysAndKeys :: Value -> Value
+
 stripNulls = cata (embed . f) where
   f (ObjectF a) = ObjectF $ HM.filter (/= Null) a
   f x = x
 
-sortArrays :: Value -> Value
-sortArrays = cata (embed . f) where
-  f (ArrayF xs) = ArrayF (V.fromList . sort $ V.toList xs)
-  f x = x
-
-sortDownArrays :: Value -> Value
-sortDownArrays = cata (embed . f) where
-  f (ArrayF xs) = ArrayF (V.fromList . sortOn Down $ V.toList xs)
-  f x = x
-
-sortKeys:: Value -> Value
-sortKeys = cata (embed . f) where
-  f (ObjectF a) = ObjectF (HM.fromList . sort $ HM.toList a)
-  f x = x
-
-sortDownKeys:: Value -> Value
-sortDownKeys = cata (embed . f) where
-  f (ObjectF a) = ObjectF (HM.fromList . sortOn Down $ HM.toList a)
-  f x = x
-
-sortArraysAndKeys:: Value -> Value
-sortArraysAndKeys = cata (embed . f) where
-  f (ObjectF a) = ObjectF (HM.fromList . sort $ HM.toList a)
-  f (ArrayF xs) = ArrayF (V.fromList . sort $ V.toList xs)
-  f x = x
-
-sortDownArraysAndKeys:: Value -> Value
-sortDownArraysAndKeys = cata (embed . f) where
-  f (ObjectF a) = ObjectF (HM.fromList . sortOn Down $ HM.toList a)
-  f (ArrayF xs) = ArrayF (V.fromList . sortOn Down $ V.toList xs)
-  f x = x
+sortArrays = transformArrays sort
+sortDownArrays = transformArrays $ sortOn Down
+sortKeys = transformKeys sort
+sortDownKeys = transformKeys $ sortOn Down
+sortArraysAndKeys = transform sort sort
+sortDownArraysAndKeys = transform (sortOn Down) (sortOn Down)
