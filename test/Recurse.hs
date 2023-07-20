@@ -81,7 +81,7 @@ recurseTests = testGroup "Recurse examples"
       , testCase "nested down sorting; keys . arrays" $ (sortDownKeys . sortDownArrays) vio @?= nestedDown
       , testCase "nested down sorting; arrays and keys" $ sortDownArraysAndKeys vio @?= nestedDown
       ]
-  , testGroup "Sort Up Down and Down Up"
+  , testGroup "Sort Down Up and Up Down"
       [ testCase "down sorting arrays . up sorting keys" $ (sortDownArrays . sortKeys) vio @?= nestedUpKeysDownArrays
       , testCase "up sorting arrays . down sorting keys" $ (sortArrays . sortDownKeys) vio @?= nestedDownKeysUpArrays
       ]
