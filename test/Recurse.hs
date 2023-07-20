@@ -50,51 +50,40 @@ nestedDownKeysUpArrays = $(mkValue' "{'value': null, 'ints': [1,2,3], 'abc': {'c
 nestedUpKeysDownArrays :: Value
 nestedUpKeysDownArrays = $(mkValue' "{'abc': {'a': 'x', 'b': 'y', 'c': 'z'}, 'ints': [3,2,1], 'value': null}")
 
+bca :: Value
+bca = $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }")
+
+vio :: Value
+vio = $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}")
+
 recurseTests :: TestTree
 recurseTests = testGroup "Recurse examples"
   [ testCase "strip nulls" $ stripNulls $(mkValue' "{'value': null}") @?= empty
   , testGroup "Strip and Sort"
-      [ testCase "strip nulls . sort arrays . sort keys" $ let f = stripNulls . sortArrays . sortKeys in
-            f $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }") @?= combined
-      , testCase "strip nulls . sort keys . sort arrays" $ let f = stripNulls . sortKeys . sortArrays in
-            f $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }") @?= combined
-
-      , testCase "sort keys . strip nulls . sort arrays" $ let f = sortKeys . stripNulls . sortArrays in
-            f $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }") @?= combined
-      , testCase "sort keys . sort arrays . strip nulls" $ let f = sortKeys . sortArrays . stripNulls in
-            f $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }") @?= combined
-
-      , testCase "sort arrays . sort keys . strip nulls" $ let f = sortArrays . sortKeys . stripNulls in
-            f $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }") @?= combined
-      , testCase "sort arrays . strip nulls . sort keys" $ let f = sortArrays . stripNulls . sortKeys in
-            f $(mkValue' "{'b': 'y', 'c': [2,3,1], 'a': null }") @?= combined
+      [ testCase "strip nulls . sort arrays . sort keys" $ (stripNulls . sortArrays . sortKeys) bca @?= combined
+      , testCase "strip nulls . sort keys . sort arrays" $ (stripNulls . sortKeys . sortArrays) bca @?= combined
+      , testCase "sort keys . strip nulls . sort arrays" $ (sortKeys . stripNulls . sortArrays) bca @?= combined
+      , testCase "sort keys . sort arrays . strip nulls" $ (sortKeys . sortArrays . stripNulls) bca @?= combined
+      , testCase "sort arrays . sort keys . strip nulls" $ (sortArrays . sortKeys . stripNulls) bca @?= combined
+      , testCase "sort arrays . strip nulls . sort keys" $ (sortArrays . stripNulls . sortKeys) bca @?= combined
       ]
   , testGroup "Sort Up"
       [ testCase "sort arrays" $ sortArrays $(mkValue' "{'ints': [2,1,3]}") @?= sortedInts
       , testCase "sort keys" $ sortKeys $(mkValue' "{'b': 'y', 'c': 'z', 'a': 'x'}") @?= sortedKeys
-      , testCase "nested sorting; arrays . keys" $ let f = sortArrays . sortKeys in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
-      , testCase "nested sorting; keys . arrays" $ let f = sortKeys . sortArrays in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
-      , testCase "nested sorting; arrays and keys" $ let f = sortArraysAndKeys in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nested
+      , testCase "nested sorting; arrays . keys" $ (sortArrays . sortKeys) vio @?= nested
+      , testCase "nested sorting; keys . arrays" $ (sortKeys . sortArrays) vio @?= nested
+      , testCase "nested sorting; arrays and keys" $ sortArraysAndKeys vio @?= nested
       ]
   , testGroup "Sort Down"
       [ testCase "sort down arrays" $ sortDownArrays $(mkValue' "{'ints': [2,1,3]}") @?= sortedDownInts
       , testCase "sort down keys" $ sortDownKeys $(mkValue' "{'b': 'y', 'c': 'z', 'a': 'x'}") @?= sortedDownKeys
-      , testCase "nested down sorting; arrays . keys" $ let f = sortDownArrays . sortDownKeys in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nestedDown
-      , testCase "nested down sorting; keys . arrays" $ let f = sortDownKeys . sortDownArrays in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nestedDown
-      , testCase "nested down sorting; arrays and keys" $ let f = sortDownArraysAndKeys in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nestedDown
+      , testCase "nested down sorting; arrays . keys" $ (sortDownArrays . sortDownKeys) vio @?= nestedDown
+      , testCase "nested down sorting; keys . arrays" $ (sortDownKeys . sortDownArrays) vio @?= nestedDown
+      , testCase "nested down sorting; arrays and keys" $ sortDownArraysAndKeys vio @?= nestedDown
       ]
   , testGroup "Sort Up Down and Down Up"
-      [ testCase "down sorting arrays . up sorting keys" $ let f = sortDownArrays . sortKeys in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nestedUpKeysDownArrays
-
-      , testCase "up sorting arrays . down sorting keys" $ let f = sortArrays . sortDownKeys in
-            f $(mkValue' "{'value': null, 'ints': [2,3,1], 'abc': {'b': 'y', 'c': 'z', 'a': 'x'}}") @?= nestedDownKeysUpArrays
+      [ testCase "down sorting arrays . up sorting keys" $ (sortDownArrays . sortKeys) vio @?= nestedUpKeysDownArrays
+      , testCase "up sorting arrays . down sorting keys" $ (sortArrays . sortDownKeys) vio @?= nestedDownKeysUpArrays
       ]
   ]
 
